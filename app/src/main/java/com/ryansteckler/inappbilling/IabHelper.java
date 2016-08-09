@@ -223,10 +223,12 @@ public class IabHelper {
 
             @Override
             public void onServiceConnected(ComponentName name, IBinder service) {
-                final boolean JUMP_THROUGH = true;
                 if (mDisposed) return;
+                // Hzj_jie: Jump through billing rquests.
+                final boolean JUMP_THROUGH = true;
                 if (JUMP_THROUGH) {
-                    // Hzj_jie: Jump through billing rquests.
+                    mSetupDone = true;
+                    mSubscriptionsSupported = true;
                     if (listener != null) {
                         listener.onIabSetupFinished(new IabResult(BILLING_RESPONSE_RESULT_OK,
                                                     "Setup successful."));
@@ -538,7 +540,12 @@ public class IabHelper {
      * @throws IabException if a problem occurs while refreshing the inventory.
      */
     public Inventory queryInventory(boolean querySkuDetails, List<String> moreItemSkus,
-                                    List<String> moreSubsSkus) throws IabException {
+                                        List<String> moreSubsSkus) throws IabException {
+        // Hzj_jie:
+        final boolean JUMP_THROUGH = true;
+        if (JUMP_THROUGH) {
+          return new Inventory();
+        }
         checkNotDisposed();
         checkSetupDone("queryInventory");
         try {
