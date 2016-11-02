@@ -35,7 +35,7 @@ import java.util.regex.PatternSyntaxException;
 public class RegexDetailFragment extends BaseDetailFragment {
 
     private String mDefaultValue = "";
-    private String mDefaultSeconds = "240";
+    private String mDefaultSeconds = "1000000";
     private String mDefaultSetName = "wakelock";
     private String mEnabled = "enabled";
 
@@ -55,7 +55,7 @@ public class RegexDetailFragment extends BaseDetailFragment {
         args.putSerializable(ARG_CUR_STAT, stat);
         args.putBoolean(ARG_TASKER_MODE, taskerMode);
         args.putString("defaultValue", TextUtils.isEmpty(defaultValue) ? "" : defaultValue);
-        args.putString("defaultSeconds", TextUtils.isEmpty(defaultSeconds) ? "240" : defaultSeconds);
+        args.putString("defaultSeconds", TextUtils.isEmpty(defaultSeconds) ? "1000000" : defaultSeconds);
         args.putString("defaultSetName", TextUtils.isEmpty(defaultSetName) ? "wakelock" : defaultSetName);
         args.putString("defaultEnabled", TextUtils.isEmpty(enabled) ? "enabled" : enabled);
         f.setArguments(args);
@@ -77,7 +77,7 @@ public class RegexDetailFragment extends BaseDetailFragment {
         try {
             return Long.parseLong(mDefaultSeconds);
         } catch (NumberFormatException ex) {
-            return 240;
+            return 1000000;
         }
     }
 
@@ -140,7 +140,7 @@ public class RegexDetailFragment extends BaseDetailFragment {
     public void onCreate(Bundle savedInstance) {
         super.onCreate(savedInstance);
         mDefaultValue = "";
-        mDefaultSeconds = "240";
+        mDefaultSeconds = "1000000";
         mDefaultSetName = "wakelock";
         mEnabled = "enabled";
         if (savedInstance != null) {

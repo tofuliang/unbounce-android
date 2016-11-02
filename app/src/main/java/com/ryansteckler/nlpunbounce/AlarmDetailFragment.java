@@ -69,7 +69,7 @@ public class AlarmDetailFragment extends BaseDetailFragment {
         final EditText edit = (EditText) view.findViewById(R.id.editAlarmSeconds);
 
         String blockSeconds = "alarm_" + mStat.getName() + "_seconds";
-        edit.setText(String.valueOf(prefs.getLong(blockSeconds, 240)));
+        edit.setText(String.valueOf(prefs.getLong(blockSeconds, 1000000)));
         edit.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {

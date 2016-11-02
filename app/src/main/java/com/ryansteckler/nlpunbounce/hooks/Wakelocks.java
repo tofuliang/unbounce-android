@@ -439,7 +439,7 @@ public class Wakelocks implements IXposedHookLoadPackage {
             if (overrideSeconds != -1) {
                 collectorMaxFreq = overrideSeconds;
             } else {
-                collectorMaxFreq = m_prefs.getLong("wakelock_" + wakeLockName + "_seconds", 240);
+                collectorMaxFreq = m_prefs.getLong("wakelock_" + wakeLockName + "_seconds", 1000000);
             }
             collectorMaxFreq *= 1000; //convert to ms
 
@@ -625,7 +625,7 @@ public class Wakelocks implements IXposedHookLoadPackage {
                 if (overrideSeconds != -1) {
                     collectorMaxFreq = overrideSeconds;
                 } else {
-                    collectorMaxFreq = m_prefs.getLong("alarm_" + alarmName + "_seconds", 240);
+                    collectorMaxFreq = m_prefs.getLong("alarm_" + alarmName + "_seconds", 1000000);
                 }
                 collectorMaxFreq *= 1000; //convert to ms
 

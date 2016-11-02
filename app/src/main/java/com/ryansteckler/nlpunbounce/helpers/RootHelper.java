@@ -49,7 +49,6 @@ public class RootHelper {
                     e.printStackTrace();
                 }
 
-                int i = 0;
 
             } catch (Exception e) {
                 e.printStackTrace();
