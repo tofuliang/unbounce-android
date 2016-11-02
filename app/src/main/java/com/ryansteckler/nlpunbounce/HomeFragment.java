@@ -130,8 +130,6 @@ public class HomeFragment extends Fragment {
 
         setupResetStatsButton(view);
 
-        updatePremiumUi();
-
         requestRefresh();
 
         handleSetup(view);
@@ -343,22 +341,7 @@ public class HomeFragment extends Fragment {
         return true;
     }
 
-    @Override
-    public void onHiddenChanged(boolean hidden) {
-        super.onHiddenChanged(hidden);
-        if (!hidden) {
-            updatePremiumUi();
-        }
-    }
 
-    private void updatePremiumUi() {
-        if (((MaterialSettingsActivity) getActivity()).isPremium()) {
-            View againView = (View) getActivity().findViewById(R.id.layoutDonateAgain);
-            againView.setVisibility(View.VISIBLE);
-            View donateView = (View) getActivity().findViewById(R.id.layoutDonate);
-            donateView.setVisibility(View.GONE);
-        }
-    }
 
     private void loadStatsFromSource(final View view) {
         final UnbounceStatsCollection stats = UnbounceStatsCollection.getInstance();
