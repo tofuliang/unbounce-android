@@ -44,36 +44,7 @@ public class MaterialSettingsActivity extends Activity
      */
     private NavigationDrawerFragment mNavigationDrawerFragment;
     private boolean mIsPremium = true;
-    IabHelper.OnIabPurchaseFinishedListener mPurchaseFinishedListener = new IabHelper.OnIabPurchaseFinishedListener() {
-        IabHelper.OnConsumeFinishedListener mConsumeFinishedListener = new IabHelper.OnConsumeFinishedListener() {
-            public void onConsumeFinished(Purchase purchase, IabResult result) {
-                //Do nothing
-            }
-        };
 
-        public void onIabPurchaseFinished(IabResult result, Purchase purchase) {
-            if (result.getResponse() == IabHelper.BILLING_RESPONSE_RESULT_USER_CANCELED ||
-                    result.getResponse() == IabHelper.BILLING_RESPONSE_RESULT_BILLING_UNAVAILABLE ||
-                    result.getResponse() == IabHelper.BILLING_RESPONSE_RESULT_DEVELOPER_ERROR ||
-                    result.getResponse() == IabHelper.BILLING_RESPONSE_RESULT_ERROR ||
-                    result.getResponse() == IabHelper.BILLING_RESPONSE_RESULT_ITEM_NOT_OWNED ||
-                    result.getResponse() == IabHelper.BILLING_RESPONSE_RESULT_ITEM_UNAVAILABLE) {
-                Toast.makeText(MaterialSettingsActivity.this, "Thank you for the thought, but the donation failed.  -Ryan", Toast.LENGTH_LONG).show();
-            } else if (result.getResponse() == IabHelper.BILLING_RESPONSE_RESULT_ITEM_ALREADY_OWNED) {
-                Toast.makeText(MaterialSettingsActivity.this, "Thank you for the thought, but you've already donated!  -Ryan", Toast.LENGTH_LONG).show();
-            } else if (result.isSuccess()) {
-                Toast.makeText(MaterialSettingsActivity.this, "Thank you SO much for donating!  -Ryan", Toast.LENGTH_LONG).show();
-                mIsPremium = true;
-                updateDonationUi();
-                if (purchase.getSku().contains("consumable")) {
-                    mHelper.consumeAsync(purchase, mConsumeFinishedListener);
-                }
-            } else {
-                Toast.makeText(MaterialSettingsActivity.this, "Thank you for the thought, but the donation failed.  -Ryan", Toast.LENGTH_LONG).show();
-            }
-
-        }
-    };
     /**
      * Used to store the last screen title. For use in {@link #restoreActionBar()}.
      */
@@ -101,65 +72,6 @@ public class MaterialSettingsActivity extends Activity
 
         mLastActionbarColor = getResources().getColor(R.color.background_primary);
 
-        //Setup donations
-
-        final IabHelper.QueryInventoryFinishedListener mGotInventoryListener = new IabHelper.QueryInventoryFinishedListener() {
-            public void onQueryInventoryFinished(IabResult result, Inventory inventory) {
-
-                if (result.isFailure()) {
-                    // update UI accordingly
-                    updateDonationUi();
-                    Log.d(TAG, "IAP result failed with code: " + result.getMessage());
-                } else {
-                    // does the user have the premium upgrade?
-                    Log.d(TAG, "IAP result succeeded");
-                    if (inventory != null) {
-                        Log.d(TAG, "IAP inventory exists");
-
-                        if (inventory.hasPurchase("donate_1") ||
-                                inventory.hasPurchase("donate_2") ||
-                                inventory.hasPurchase("donate_5") ||
-                                inventory.hasPurchase("donate_10")) {
-                            Log.d(TAG, "IAP inventory contains a donation");
-
-                            mIsPremium = true;
-                        }
-                    }
-                    // update UI accordingly
-                    if (isPremium()) {
-                        updateDonationUi();
-                    }
-                }
-            }
-        };
-
-        Log.i(TAG, "MaterialSettingsActivity setting up IAB");
-        //Normally we would secure this key, but we're not licensing this app.
-        String base64billing = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAxwicOx54j03qBil36upqYab0uBWnf+WjoSRNOaTD9mkqj9bLM465gZlDXhutMZ+n5RlHUqmxl7jwH9KyYGTbwFqCxbLMCwR4oDhXVhX4fS6iggoHY7Ek6EzMT79x2XwCDg1pdQmX9d9TYRp32Sw2E+yg2uZKSPW29ikfdcmfkHcdCWrjFSuMJpC14R3d9McWQ7sg42eQq2spIuSWtP8ARGtj1M8eLVxgkQpXWrk9ijPgVcAbNZYWT9ndIZoKPg7VJVvzzAUNK/YOb+BzRurqJ42vCZy1+K+E4EUtmg/fxawHfXLZ3F/gNwictZO9fv1PYHPMa0sezSNVFAcm0yP1BwIDAQAB";
-        mHelper = new IabHelper(MaterialSettingsActivity.this, base64billing);
-        mHelper.startSetup(new IabHelper.OnIabSetupFinishedListener() {
-            public void onIabSetupFinished(IabResult result) {
-                if (!result.isSuccess()) {
-                    Log.d(TAG, "In-app Billing setup failed: " + result);
-                    AlertDialog errorDialog = new AlertDialog.Builder(MaterialSettingsActivity.this)
-                            .setTitle(R.string.alert_noiab_title)
-                            .setMessage(R.string.alert_noiab_content)
-                            .setNeutralButton("OK", new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int which) {
-                                }
-                            })
-                            .setIcon(android.R.drawable.ic_dialog_alert)
-                            .show();
-
-                    ((TextView) errorDialog.findViewById(android.R.id.message)).setMovementMethod(LinkMovementMethod.getInstance());
-
-                } else {
-                    mHelper.queryInventoryAsync(false, mGotInventoryListener);
-                }
-
-            }
-        });
-
         Log.i(TAG, "MaterialSettingsActivity Starting SELinux service");
         startService(new Intent(this, SELinuxService.class));
 
@@ -172,17 +84,6 @@ public class MaterialSettingsActivity extends Activity
         mCurTheme = ThemeHelper.onActivityResumeVerifyTheme(this, mCurTheme);
         mCurForceEnglish = LocaleHelper.onActivityResumeVerifyLocale(this, mCurForceEnglish);
 
-    }
-
-    private void updateDonationUi() {
-        if (isPremium()) {
-            View againView = (View) findViewById(R.id.layoutDonateAgain);
-            if (againView != null)
-                againView.setVisibility(View.VISIBLE);
-            View donateView = (View) findViewById(R.id.layoutDonate);
-            if (donateView != null)
-                donateView.setVisibility(View.GONE);
-        }
     }
 
     public boolean isPremium() {

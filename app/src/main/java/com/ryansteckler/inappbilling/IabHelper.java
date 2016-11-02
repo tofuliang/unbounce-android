@@ -400,6 +400,7 @@ public class IabHelper {
                 return;
             }
 
+
             PendingIntent pendingIntent = buyIntentBundle.getParcelable(RESPONSE_BUY_INTENT);
             logDebug("Launching buy intent for " + sku + ". Request code: " + requestCode);
             mRequestCode = requestCode;
