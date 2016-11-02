@@ -90,7 +90,7 @@ public abstract class BaseDetailFragment extends Fragment {
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
                     //Check license
-                    boolean isPremium = false;
+                    boolean isPremium = true;
                     //We may be running under the TaskerActivity or the MaterialSettingsActivity.
                     Activity baseActivity = getActivity();
                     if (baseActivity instanceof MaterialSettingsActivity) {
