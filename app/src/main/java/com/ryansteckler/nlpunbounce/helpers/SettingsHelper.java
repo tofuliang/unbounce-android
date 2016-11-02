@@ -6,8 +6,7 @@ import android.content.SharedPreferences;
  * Created by rsteckler on 9/28/14.
  */
 public class SettingsHelper {
-    public static void resetToDefaults(SharedPreferences prefs)
-    {
+    public static void resetToDefaults(SharedPreferences prefs) {
         final SharedPreferences.Editor editor = prefs.edit();
         editor.clear();
         editor.putBoolean("first_launch", false);

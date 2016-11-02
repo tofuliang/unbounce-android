@@ -12,7 +12,6 @@ import android.widget.TextView;
 
 import com.ryansteckler.nlpunbounce.R;
 import com.ryansteckler.nlpunbounce.helpers.SortWakeLocks;
-import com.ryansteckler.nlpunbounce.models.AlarmStats;
 import com.ryansteckler.nlpunbounce.models.BaseStats;
 import com.ryansteckler.nlpunbounce.models.ServiceStats;
 
@@ -32,19 +31,13 @@ public class ServicesAdapter extends BaseAdapter {
         mTruncateEnd = !prefs.getBoolean("scroll_item_names", true);
     }
 
-
-    private static class ServiceViewHolder {
-        TextView name;
-        TextView serviceCount;
-    }
-
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         int itemType = this.getItemViewType(position);
         switch (itemType) {
             case ITEM_TYPE:
                 // Get the data item for this position
-                ServiceStats service = (ServiceStats)getItem(position);
+                ServiceStats service = (ServiceStats) getItem(position);
 
                 // Check if an existing view is being reused, otherwise inflate the view
                 ServiceViewHolder serviceViewHolder; // view lookup cache stored in tag
@@ -60,8 +53,7 @@ public class ServicesAdapter extends BaseAdapter {
                     serviceViewHolder.serviceCount = (TextView) convertView.findViewById(R.id.textViewServiceCount);
 
                     convertView.setTag(serviceViewHolder);
-                }
-                else {
+                } else {
                     serviceViewHolder = (ServiceViewHolder) convertView.getTag();
                 }
 
@@ -77,8 +69,7 @@ public class ServicesAdapter extends BaseAdapter {
                 int width = serviceViewHolder.serviceCount.getMeasuredWidth();
                 if (height > width) {
                     serviceViewHolder.serviceCount.setLayoutParams(new LinearLayout.LayoutParams(height, height));
-                }
-                else {
+                } else {
                     serviceViewHolder.serviceCount.setLayoutParams(new LinearLayout.LayoutParams(width, width));
                 }
 
@@ -104,17 +95,20 @@ public class ServicesAdapter extends BaseAdapter {
         return convertView;
     }
 
-
-
     public void sort(int sortBy, boolean categorize) {
         mSortBy = sortBy;
         Collections.sort(mBackingList, SortWakeLocks.getBaseListComparator(mSortBy, categorize, this.getContext()));
-        sort(SortWakeLocks.getBaseListComparator(mSortBy, categorize,this.getContext()));
+        sort(SortWakeLocks.getBaseListComparator(mSortBy, categorize, this.getContext()));
         addCategories(mBackingList);
     }
 
     public void sort(int sortBy) {
         sort(sortBy, true);
+    }
+
+    private static class ServiceViewHolder {
+        TextView name;
+        TextView serviceCount;
     }
 
 

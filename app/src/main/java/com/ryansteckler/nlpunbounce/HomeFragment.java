@@ -50,28 +50,27 @@ import com.ryansteckler.nlpunbounce.helpers.ThemeHelper;
 import com.ryansteckler.nlpunbounce.hooks.Wakelocks;
 import com.ryansteckler.nlpunbounce.models.UnbounceStatsCollection;
 
-
 import java.io.File;
 
 /**
  * A placeholder fragment containing a simple view.
  */
-public class HomeFragment extends Fragment  {
+public class HomeFragment extends Fragment {
 
-    private OnFragmentInteractionListener mListener;
-
-
-    private int mSetupStep = 0;
-
-    private int mSetupFailureStep = SETUP_FAILURE_NONE; //We're optimists  :)
     private final static int SETUP_FAILURE_NONE = 0; //We're good.  The service is running.
     private final static int SETUP_FAILURE_SERVICE = 1; //The service isn't running, but Xposed is installed.
     private final static int SETUP_FAILURE_VERSION = 2; //The service isn't running, but Xposed is installed.
     private final static int SETUP_FAILURE_XPOSED_RUNNING = 3; //Xposed isn't running ("installed")
     private final static int SETUP_FAILURE_XPOSED_INSTALL = 4; //Xposed isn't installed
     private final static int SETUP_FAILURE_ROOT = 5; //There's no root access.
-
     private final static String TAG = "Amplify: ";
+    private OnFragmentInteractionListener mListener;
+    private int mSetupStep = 0;
+    private int mSetupFailureStep = SETUP_FAILURE_NONE; //We're optimists  :)
+    private BroadcastReceiver refreshReceiver;
+
+    public HomeFragment() {
+    }
 
     /**
      * Returns a new instance of this fragment for the given section
@@ -80,9 +79,6 @@ public class HomeFragment extends Fragment  {
     public static HomeFragment newInstance() {
         HomeFragment fragment = new HomeFragment();
         return fragment;
-    }
-
-    public HomeFragment() {
     }
 
     @Override
@@ -106,7 +102,6 @@ public class HomeFragment extends Fragment  {
             }
 
         }
-
 
 
     }
@@ -153,7 +148,7 @@ public class HomeFragment extends Fragment  {
         if (!getAmplifyKernelVersion().equals(Wakelocks.VERSION) || firstRun) {
 
             //Show the banner
-            final LinearLayout banner = (LinearLayout)view.findViewById(R.id.banner);
+            final LinearLayout banner = (LinearLayout) view.findViewById(R.id.banner);
             banner.setVisibility(View.VISIBLE);
 
             //Let's find out why the service isn't running:
@@ -184,9 +179,9 @@ public class HomeFragment extends Fragment  {
                         } catch (InterruptedException e) {
                         }
                     }
-                    ViewGroup container = (ViewGroup)getActivity().findViewById(R.id.bannerSwitcher);
+                    ViewGroup container = (ViewGroup) getActivity().findViewById(R.id.bannerSwitcher);
                     setupBannerAnimations(container);
-                    ViewGroup buttonContainer = (ViewGroup)getActivity().findViewById(R.id.welcomeButtonContainer);
+                    ViewGroup buttonContainer = (ViewGroup) getActivity().findViewById(R.id.welcomeButtonContainer);
                     animateButtonContainer(buttonContainer);
                 }
             });
@@ -219,24 +214,548 @@ public class HomeFragment extends Fragment  {
         }
     }
 
+    private ValueAnimator blurBackground(View view) {
+        //Blur the background
+        //Show the image (now transparent)
+        final ImageView imageBlur = (ImageView) view.findViewById(R.id.imageBlur);
+        imageBlur.setVisibility(View.VISIBLE);
+        //Fade it to opaque
+        ValueAnimator blurAnimation = ValueAnimator.ofFloat(0, 0.8f);
+        blurAnimation.setDuration(1000);
+        blurAnimation.setInterpolator(new AccelerateDecelerateInterpolator());
+        blurAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+
+            @Override
+            public void onAnimationUpdate(final ValueAnimator animator) {
+                float curValue = (float) animator.getAnimatedValue();
+                imageBlur.setAlpha(curValue);
+            }
+        });
+        return blurAnimation;
+    }
+
+    private void setupKarma(View view) {
+        LinearLayout layout = (LinearLayout) view.findViewById(R.id.buttonKarma1);
+        layout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //Catch crash
+                try {
+                    ((MaterialSettingsActivity) getActivity()).mHelper.launchPurchaseFlow(getActivity(), "donate_2", 2, ((MaterialSettingsActivity) getActivity()).mPurchaseFinishedListener, "2");
+                } catch (IllegalStateException ise) {
+                    new AlertDialog.Builder(getActivity())
+                            .setTitle(R.string.alert_noiab_title)
+                            .setMessage(R.string.alert_noiab_content)
+                            .setNeutralButton("OK", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                }
+                            })
+                            .setIcon(android.R.drawable.ic_dialog_alert)
+                            .show();
+
+                }
+            }
+        });
+
+        layout = (LinearLayout) view.findViewById(R.id.buttonKarma5);
+        layout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                try {
+                    ((MaterialSettingsActivity) getActivity()).mHelper.launchPurchaseFlow(getActivity(), "donate_5", 5, ((MaterialSettingsActivity) getActivity()).mPurchaseFinishedListener, "5");
+                } catch (IllegalStateException ise) {
+                    new AlertDialog.Builder(getActivity())
+                            .setTitle(R.string.alert_noiab_title)
+                            .setMessage(R.string.alert_noiab_content)
+                            .setNeutralButton("OK", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                }
+                            })
+                            .setIcon(android.R.drawable.ic_dialog_alert)
+                            .show();
+
+                }
+
+            }
+        });
+
+        layout = (LinearLayout) view.findViewById(R.id.buttonKarma10);
+        layout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                try {
+                    ((MaterialSettingsActivity) getActivity()).mHelper.launchPurchaseFlow(getActivity(), "donate_10", 10, ((MaterialSettingsActivity) getActivity()).mPurchaseFinishedListener, "10");
+                } catch (IllegalStateException ise) {
+                    new AlertDialog.Builder(getActivity())
+                            .setTitle(R.string.alert_noiab_title)
+                            .setMessage(R.string.alert_noiab_content)
+                            .setNeutralButton("OK", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                }
+                            })
+                            .setIcon(android.R.drawable.ic_dialog_alert)
+                            .show();
+
+                }
+
+            }
+        });
+
+        LinearLayout layoutAgain = (LinearLayout) view.findViewById(R.id.buttonKarma1Again);
+        layoutAgain.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                try {
+                    ((MaterialSettingsActivity) getActivity()).mHelper.launchPurchaseFlow(getActivity(), "donate_1_consumable", 1, ((MaterialSettingsActivity) getActivity()).mPurchaseFinishedListener, "1");
+                } catch (IllegalStateException ise) {
+                    new AlertDialog.Builder(getActivity())
+                            .setTitle(R.string.alert_noiab_title)
+                            .setMessage(R.string.alert_noiab_content)
+                            .setNeutralButton("OK", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                }
+                            })
+                            .setIcon(android.R.drawable.ic_dialog_alert)
+                            .show();
+
+                }
+            }
+        });
+
+        layoutAgain = (LinearLayout) view.findViewById(R.id.buttonKarma5Again);
+        layoutAgain.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                try {
+                    ((MaterialSettingsActivity) getActivity()).mHelper.launchPurchaseFlow(getActivity(), "donate_5_consumable", 5, ((MaterialSettingsActivity) getActivity()).mPurchaseFinishedListener, "5");
+                } catch (IllegalStateException ise) {
+                    new AlertDialog.Builder(getActivity())
+                            .setTitle(R.string.alert_noiab_title)
+                            .setMessage(R.string.alert_noiab_content)
+                            .setNeutralButton("OK", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                }
+                            })
+                            .setIcon(android.R.drawable.ic_dialog_alert)
+                            .show();
+
+                }
+
+            }
+        });
+
+        layoutAgain = (LinearLayout) view.findViewById(R.id.buttonKarma10Again);
+        layoutAgain.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                try {
+                    ((MaterialSettingsActivity) getActivity()).mHelper.launchPurchaseFlow(getActivity(), "donate_10_consumable", 10, ((MaterialSettingsActivity) getActivity()).mPurchaseFinishedListener, "10");
+                } catch (IllegalStateException ise) {
+                    new AlertDialog.Builder(getActivity())
+                            .setTitle(R.string.alert_noiab_title)
+                            .setMessage(R.string.alert_noiab_content)
+                            .setNeutralButton("OK", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                }
+                            })
+                            .setIcon(android.R.drawable.ic_dialog_alert)
+                            .show();
+
+                }
+
+            }
+        });
+
+        TextView helpFurtherButton = (TextView) view.findViewById(R.id.buttonHelpFurther);
+        final LinearLayout expanded = (LinearLayout) view.findViewById(R.id.layoutExpandedDonateAgain);
+        final ScrollView scroll = (ScrollView) view.findViewById(R.id.scrollView);
+        helpFurtherButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                expanded.setVisibility(View.VISIBLE);
+                scroll.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        scroll.fullScroll(View.FOCUS_DOWN);
+                    }
+                });
+            }
+        });
+    }
+
+    private void setupResetStatsButton(final View view) {
+        TextView resetStatsButton = (TextView) view.findViewById(R.id.buttonResetStats);
+        resetStatsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View textView) {
+                new AlertDialog.Builder(getActivity())
+                        .setTitle(R.string.alert_delete_stats_title)
+                        .setMessage(R.string.alert_delete_stats_content)
+                        .setPositiveButton(R.string.dialog_delete, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                UnbounceStatsCollection.getInstance().resetStats(getActivity(), UnbounceStatsCollection.STAT_CURRENT);
+
+                                Intent intent = new Intent(XposedReceiver.RESET_ACTION);
+                                intent.putExtra(XposedReceiver.STAT_TYPE, UnbounceStatsCollection.STAT_CURRENT);
+                                try {
+                                    getActivity().sendBroadcast(intent);
+                                } catch (IllegalStateException ise) {
+
+                                }
+                                loadStatsFromSource(view);
+                            }
+                        })
+                        .setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                // do nothing
+                            }
+                        })
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .show();
+            }
+        });
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+    }
+
+
+    private boolean isXposedInstalled() {
+
+        PackageManager pm = getActivity().getPackageManager();
+
+        try {
+            pm.getPackageInfo("de.robv.android.xposed.installer", PackageManager.GET_ACTIVITIES);
+            return true;
+        } catch (PackageManager.NameNotFoundException e) {
+            return false;
+        }
+    }
+
+    private boolean isInstalledFromPlay() {
+        String installer = getActivity().getPackageManager().getInstallerPackageName("com.ryansteckler.nlpunbounce");
+
+        if (installer == null) {
+            return false;
+        } else {
+            return installer.equals("com.android.vending");
+        }
+    }
+
+    private boolean launchXposedModules() {
+        Intent LaunchIntent = null;
+
+        try {
+            LaunchIntent = getActivity().getPackageManager().getLaunchIntentForPackage("de.robv.android.xposed.installer");
+            if (LaunchIntent == null) {
+                return false;
+            } else {
+                Intent intent = new Intent("de.robv.android.xposed.installer.OPEN_SECTION");
+                intent.setPackage("de.robv.android.xposed.installer");
+                intent.putExtra("section", "modules");
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+            }
+        } catch (Exception e) {
+            if (LaunchIntent != null) {
+                LaunchIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(LaunchIntent);
+            } else {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private boolean launchXposedFramework() {
+        Intent LaunchIntent = null;
+
+        try {
+            LaunchIntent = getActivity().getPackageManager().getLaunchIntentForPackage("de.robv.android.xposed.installer");
+            if (LaunchIntent == null) {
+                return false;
+            } else {
+                Intent intent = new Intent("de.robv.android.xposed.installer.OPEN_SECTION");
+                intent.setPackage("de.robv.android.xposed.installer");
+                intent.putExtra("section", "install");
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+            }
+        } catch (Exception e) {
+            if (LaunchIntent != null) {
+                LaunchIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(LaunchIntent);
+            } else {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        if (!hidden) {
+            updatePremiumUi();
+        }
+    }
+
+    private void updatePremiumUi() {
+        if (((MaterialSettingsActivity) getActivity()).isPremium()) {
+            View againView = (View) getActivity().findViewById(R.id.layoutDonateAgain);
+            againView.setVisibility(View.VISIBLE);
+            View donateView = (View) getActivity().findViewById(R.id.layoutDonate);
+            donateView.setVisibility(View.GONE);
+        }
+    }
+
+    private void loadStatsFromSource(final View view) {
+        final UnbounceStatsCollection stats = UnbounceStatsCollection.getInstance();
+        final Context c = getActivity();
+        stats.loadStats(c, true);
+        String duration = stats.getWakelockDurationAllowedFormatted(c, UnbounceStatsCollection.STAT_CURRENT);
+        //Wakelocks
+        TextView textView = (TextView) view.findViewById(R.id.textLocalWakeTimeAllowed);
+        textView.setText(duration);
+        textView = (TextView) view.findViewById(R.id.textRunningSince);
+        textView.setText(stats.getRunningSinceFormatted());
+        textView = (TextView) view.findViewById(R.id.textLocalWakeAcquired);
+        textView.setText(String.valueOf(stats.getTotalAllowedWakelockCount(c, UnbounceStatsCollection.STAT_CURRENT)));
+        textView = (TextView) view.findViewById(R.id.textLocalWakeBlocked);
+        textView.setText(String.valueOf(stats.getTotalBlockWakelockCount(c, UnbounceStatsCollection.STAT_CURRENT)));
+        textView = (TextView) view.findViewById(R.id.textLocalWakeTimeBlocked);
+        textView.setText(stats.getWakelockDurationBlockedFormatted(c, UnbounceStatsCollection.STAT_CURRENT));
+
+        //Services
+        textView = (TextView) view.findViewById(R.id.textLocalServiceAcquired);
+        textView.setText(String.valueOf(stats.getTotalAllowedServiceCount(c, UnbounceStatsCollection.STAT_CURRENT)));
+        textView = (TextView) view.findViewById(R.id.textLocalServiceBlocked);
+        textView.setText(String.valueOf(stats.getTotalBlockServiceCount(c, UnbounceStatsCollection.STAT_CURRENT)));
+
+        //Alarms
+        textView = (TextView) view.findViewById(R.id.textLocalAlarmsAcquired);
+        textView.setText(String.valueOf(stats.getTotalAllowedAlarmCount(c, UnbounceStatsCollection.STAT_CURRENT)));
+        textView = (TextView) view.findViewById(R.id.textLocalAlarmsBlocked);
+        textView.setText(String.valueOf(stats.getTotalBlockAlarmCount(c, UnbounceStatsCollection.STAT_CURRENT)));
+
+        //Global wakelocks.
+        //Kick off a refresh
+
+        SharedPreferences prefs = getActivity().getSharedPreferences("com.ryansteckler.nlpunbounce" + "_preferences", Context.MODE_WORLD_READABLE);
+        if (prefs.getBoolean("global_participation", true)) {
+            stats.getStatsFromNetwork(c, new Handler() {
+                @Override
+                public void handleMessage(Message msg) {
+                    //Global wakelocks
+                    TextView textView = (TextView) view.findViewById(R.id.textGlobalWakelockDurationAllowed);
+                    textView.setText(stats.getWakelockDurationAllowedFormatted(c, UnbounceStatsCollection.STAT_GLOBAL));
+                    textView = (TextView) view.findViewById(R.id.textGlobalWakelockAllowed);
+                    textView.setText(String.valueOf(stats.getTotalAllowedWakelockCount(c, UnbounceStatsCollection.STAT_GLOBAL)));
+                    textView = (TextView) view.findViewById(R.id.textGlobalWakelockBlocked);
+                    textView.setText(String.valueOf(stats.getTotalBlockWakelockCount(c, UnbounceStatsCollection.STAT_GLOBAL)));
+                    textView = (TextView) view.findViewById(R.id.textGlobalWakelockDurationBlocked);
+                    textView.setText(stats.getWakelockDurationBlockedFormatted(c, UnbounceStatsCollection.STAT_GLOBAL));
+
+                    //Global services
+                    textView = (TextView) view.findViewById(R.id.textGlobalServiceAllowed);
+                    textView.setText(String.valueOf(stats.getTotalAllowedServiceCount(c, UnbounceStatsCollection.STAT_GLOBAL)));
+                    textView = (TextView) view.findViewById(R.id.textGlobalServiceBlocked);
+                    textView.setText(String.valueOf(stats.getTotalBlockServiceCount(c, UnbounceStatsCollection.STAT_GLOBAL)));
+
+                    //Global Alarms
+                    textView = (TextView) view.findViewById(R.id.textGlobalAlarmAllowed);
+                    textView.setText(String.valueOf(stats.getTotalAllowedAlarmCount(c, UnbounceStatsCollection.STAT_GLOBAL)));
+                    textView = (TextView) view.findViewById(R.id.textGlobalAlarmBlocked);
+                    textView.setText(String.valueOf(stats.getTotalBlockAlarmCount(c, UnbounceStatsCollection.STAT_GLOBAL)));
+
+                }
+            });
+        } else {
+            //Global wakelocks
+            textView = (TextView) view.findViewById(R.id.textGlobalWakelockDurationAllowed);
+            textView.setText(getResources().getString(R.string.stat_disabled));
+            textView = (TextView) view.findViewById(R.id.textGlobalWakelockAllowed);
+            textView.setText(getResources().getString(R.string.stat_disabled));
+            textView = (TextView) view.findViewById(R.id.textGlobalWakelockBlocked);
+            textView.setText(getResources().getString(R.string.stat_disabled));
+            textView = (TextView) view.findViewById(R.id.textGlobalWakelockDurationBlocked);
+            textView.setText(getResources().getString(R.string.stat_disabled));
+
+            //Global services
+            textView = (TextView) view.findViewById(R.id.textGlobalServiceAllowed);
+            textView.setText(getResources().getString(R.string.stat_disabled));
+            textView = (TextView) view.findViewById(R.id.textGlobalServiceBlocked);
+            textView.setText(getResources().getString(R.string.stat_disabled));
+
+            //Global Alarms
+            textView = (TextView) view.findViewById(R.id.textGlobalAlarmAllowed);
+            textView.setText(getResources().getString(R.string.stat_disabled));
+            textView = (TextView) view.findViewById(R.id.textGlobalAlarmBlocked);
+            textView.setText(getResources().getString(R.string.stat_disabled));
+
+        }
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+
+        View rootView = inflater.inflate(R.layout.fragment_home, container, false);
+        return rootView;
+    }
+
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+
+        try {
+            mListener = (OnFragmentInteractionListener) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(activity.toString()
+                    + " must implement OnFragmentInteractionListener");
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mListener = null;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        // Prevent menu items from crossing fragments
+        menu.clear();
+
+        getActivity().getMenuInflater().inflate(R.menu.home, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == R.id.action_refresh) {
+            requestRefresh();
+
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void requestRefresh() {
+        Intent intent = new Intent(XposedReceiver.REFRESH_ACTION);
+        try {
+            getActivity().sendBroadcast(intent);
+        } catch (IllegalStateException ise) {
+
+        }
+    }
+
+    private void animateButtonContainer(final ViewGroup container) {
+        LayoutTransition lt = container.getLayoutTransition();
+        if (lt == null) {
+            lt = new LayoutTransition();
+        }
+        lt.enableTransitionType(LayoutTransition.APPEARING);
+        lt.disableTransitionType(LayoutTransition.DISAPPEARING);
+        lt.setDuration(300);
+        container.setLayoutTransition(lt);
+    }
+
+    private void setupBannerAnimations(ViewGroup container) {
+        AnimatorSet animatorDisappear = getDisappearAnimation(container);
+        AnimatorSet animatorAppear = getAppearAnimation(container);
+
+        LayoutTransition lt = container.getLayoutTransition();
+        if (lt == null) {
+            lt = new LayoutTransition();
+        }
+        lt.setAnimator(LayoutTransition.DISAPPEARING, animatorDisappear);
+        lt.setAnimator(LayoutTransition.APPEARING, animatorAppear);
+        lt.setStartDelay(LayoutTransition.APPEARING, 0);
+        lt.setDuration(300);
+        container.setLayoutTransition(lt);
+
+    }
+
+    private AnimatorSet getDisappearAnimation(ViewGroup container) {
+        float endLocation = container.getHeight();
+        DisplayMetrics metrics = Resources.getSystem().getDisplayMetrics();
+        float dp = endLocation / (metrics.densityDpi / 160f);
+
+        AnimatorSet animator = new AnimatorSet();
+        ObjectAnimator moveBanner = ObjectAnimator.ofFloat(null, View.TRANSLATION_Y, 0, dp);
+        ObjectAnimator fadeBanner = ObjectAnimator.ofFloat(null, View.ALPHA, 1, 0);
+        animator.playTogether(moveBanner, fadeBanner);
+        return animator;
+    }
+
+    private AnimatorSet getAppearAnimation(ViewGroup container) {
+        float endLocation = container.getHeight() * -1;
+        DisplayMetrics metrics = Resources.getSystem().getDisplayMetrics();
+        float dp = endLocation / (metrics.densityDpi / 160f);
+
+        AnimatorSet animator = new AnimatorSet();
+        ObjectAnimator moveBanner = ObjectAnimator.ofFloat(null, View.TRANSLATION_Y, dp, 0);
+        ObjectAnimator fadeBanner = ObjectAnimator.ofFloat(null, View.ALPHA, 0, 1);
+        animator.playTogether(moveBanner, fadeBanner);
+        return animator;
+    }
+
+    public boolean isUnbounceServiceRunning() {
+        //The Unbounce hook changes this to true.
+        return false;
+    }
+
+    public String getAmplifyKernelVersion() {
+        //The Unbounce hook changes this to true.
+        return "0";
+    }
+
+    public boolean isXposedRunning() {
+//        return true;
+        return new File("/data/data/de.robv.android.xposed.installer/bin/XposedBridge.jar").exists();
+    }
+
+    /**
+     * This interface must be implemented by activities that contain this
+     * fragment to allow an interaction in this fragment to be communicated
+     * to the activity and potentially other fragments contained in that
+     * activity.
+     * <p>
+     * See the Android Training lesson <a href=
+     * "http://developer.android.com/training/basics/fragments/communicating.html"
+     * >Communicating with Other Fragments</a> for more information.
+     */
+    public interface OnFragmentInteractionListener {
+        public void onHomeSetTitle(String id);
+    }
 
     private class WelcomeAnimationListener implements Animator.AnimatorListener, ValueAnimator.AnimatorUpdateListener {
-        @Override
-        public void onAnimationCancel(Animator animator) {}
-        @Override
-        public void onAnimationRepeat(Animator animator) {}
-        @Override
-        public void onAnimationStart(Animator animator) {}
-
+        ValueAnimator mProgressAnimation;
         private View mParentView;
         private ValueAnimator mReverseWhenDone;
         private ProgressBar mProgressChecking;
-        ValueAnimator mProgressAnimation;
+
         public WelcomeAnimationListener(View parentView, final ValueAnimator reverseWhenDone, ProgressBar progressChecking, ValueAnimator progressAnimation) {
             mParentView = parentView;
             mReverseWhenDone = reverseWhenDone;
             mProgressChecking = progressChecking;
             mProgressAnimation = progressAnimation;
+        }
+
+        @Override
+        public void onAnimationCancel(Animator animator) {
+        }
+
+        @Override
+        public void onAnimationRepeat(Animator animator) {
+        }
+
+        @Override
+        public void onAnimationStart(Animator animator) {
         }
 
         @Override
@@ -299,7 +818,7 @@ public class HomeFragment extends Fragment  {
         private void handleFinalStep() {
 
             //Setup the text on the final screen to good/bad to set user expectations
-            final TextView stepText = (TextView)mParentView.findViewById(R.id.welcomeStepText);
+            final TextView stepText = (TextView) mParentView.findViewById(R.id.welcomeStepText);
             if (mSetupFailureStep == SETUP_FAILURE_NONE) {
                 stepText.setText(getResources().getString(R.string.welcome_banner_checking_looks_great));
             } else {
@@ -308,7 +827,7 @@ public class HomeFragment extends Fragment  {
 
             //This is the next button that we hide, show, and replace the text of.  Make it visible so the
             //user can move forward
-            final LinearLayout nextButton = (LinearLayout)mParentView.findViewById(R.id.buttonWelcomeNext);
+            final LinearLayout nextButton = (LinearLayout) mParentView.findViewById(R.id.buttonWelcomeNext);
             nextButton.setVisibility(View.VISIBLE);
             nextButton.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -403,7 +922,7 @@ public class HomeFragment extends Fragment  {
                             //If the download was successful...
                             if (success) {
                                 //Update the downloading text
-                                TextView downloadText = (TextView)getActivity().findViewById(R.id.welcome_download_status);
+                                TextView downloadText = (TextView) getActivity().findViewById(R.id.welcome_download_status);
                                 downloadText.setText(getString(R.string.welcome_downloaded_xposed));
                                 //Let them install the framework
                                 nextButton.setVisibility(View.VISIBLE);
@@ -420,7 +939,7 @@ public class HomeFragment extends Fragment  {
                                     }
                                 });
                             } else {
-                                TextView downloadText = (TextView)getActivity().findViewById(R.id.welcome_download_status);
+                                TextView downloadText = (TextView) getActivity().findViewById(R.id.welcome_download_status);
                                 downloadText.setText(getString(R.string.welcome_download_error_xposed));
                                 nextButton.setVisibility(View.VISIBLE);
                                 nextButtonText.setText(R.string.welcome_banner_button_exit);
@@ -500,535 +1019,6 @@ public class HomeFragment extends Fragment  {
                 }
             });
         }
-    }
-
-    private ValueAnimator blurBackground(View view) {
-        //Blur the background
-        //Show the image (now transparent)
-        final ImageView imageBlur = (ImageView) view.findViewById(R.id.imageBlur);
-        imageBlur.setVisibility(View.VISIBLE);
-        //Fade it to opaque
-        ValueAnimator blurAnimation = ValueAnimator.ofFloat(0, 0.8f);
-        blurAnimation.setDuration(1000);
-        blurAnimation.setInterpolator(new AccelerateDecelerateInterpolator());
-        blurAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-
-            @Override
-            public void onAnimationUpdate(final ValueAnimator animator) {
-                float curValue = (float) animator.getAnimatedValue();
-                imageBlur.setAlpha(curValue);
-            }
-        });
-        return blurAnimation;
-    }
-
-    private void setupKarma(View view) {
-        LinearLayout layout = (LinearLayout) view.findViewById(R.id.buttonKarma1);
-        layout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //Catch crash
-                try {
-                    ((MaterialSettingsActivity) getActivity()).mHelper.launchPurchaseFlow(getActivity(), "donate_2", 2, ((MaterialSettingsActivity) getActivity()).mPurchaseFinishedListener, "2");
-                } catch (IllegalStateException ise) {
-                    new AlertDialog.Builder(getActivity())
-                            .setTitle(R.string.alert_noiab_title)
-                            .setMessage(R.string.alert_noiab_content)
-                            .setNeutralButton("OK", new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int which) {
-                                }
-                            })
-                            .setIcon(android.R.drawable.ic_dialog_alert)
-                            .show();
-
-                }
-            }
-        });
-
-        layout = (LinearLayout) view.findViewById(R.id.buttonKarma5);
-        layout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                try {
-                    ((MaterialSettingsActivity)getActivity()).mHelper.launchPurchaseFlow(getActivity(), "donate_5", 5, ((MaterialSettingsActivity)getActivity()).mPurchaseFinishedListener, "5");
-                } catch (IllegalStateException ise) {
-                    new AlertDialog.Builder(getActivity())
-                            .setTitle(R.string.alert_noiab_title)
-                            .setMessage(R.string.alert_noiab_content)
-                            .setNeutralButton("OK", new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int which) {
-                                }
-                            })
-                            .setIcon(android.R.drawable.ic_dialog_alert)
-                            .show();
-
-                }
-
-            }
-        });
-
-        layout = (LinearLayout) view.findViewById(R.id.buttonKarma10);
-        layout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                try {
-                    ((MaterialSettingsActivity)getActivity()).mHelper.launchPurchaseFlow(getActivity(), "donate_10", 10, ((MaterialSettingsActivity)getActivity()).mPurchaseFinishedListener, "10");
-                } catch (IllegalStateException ise) {
-                    new AlertDialog.Builder(getActivity())
-                            .setTitle(R.string.alert_noiab_title)
-                            .setMessage(R.string.alert_noiab_content)
-                            .setNeutralButton("OK", new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int which) {
-                                }
-                            })
-                            .setIcon(android.R.drawable.ic_dialog_alert)
-                            .show();
-
-                }
-
-            }
-        });
-
-        LinearLayout layoutAgain = (LinearLayout) view.findViewById(R.id.buttonKarma1Again);
-        layoutAgain.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                try {
-                    ((MaterialSettingsActivity)getActivity()).mHelper.launchPurchaseFlow(getActivity(), "donate_1_consumable", 1, ((MaterialSettingsActivity)getActivity()).mPurchaseFinishedListener, "1");
-                } catch (IllegalStateException ise) {
-                    new AlertDialog.Builder(getActivity())
-                            .setTitle(R.string.alert_noiab_title)
-                            .setMessage(R.string.alert_noiab_content)
-                            .setNeutralButton("OK", new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int which) {
-                                }
-                            })
-                            .setIcon(android.R.drawable.ic_dialog_alert)
-                            .show();
-
-                }
-            }
-        });
-
-        layoutAgain = (LinearLayout) view.findViewById(R.id.buttonKarma5Again);
-        layoutAgain.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                try {
-                    ((MaterialSettingsActivity)getActivity()).mHelper.launchPurchaseFlow(getActivity(), "donate_5_consumable", 5, ((MaterialSettingsActivity)getActivity()).mPurchaseFinishedListener, "5");
-                } catch (IllegalStateException ise) {
-                    new AlertDialog.Builder(getActivity())
-                            .setTitle(R.string.alert_noiab_title)
-                            .setMessage(R.string.alert_noiab_content)
-                            .setNeutralButton("OK", new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int which) {
-                                }
-                            })
-                            .setIcon(android.R.drawable.ic_dialog_alert)
-                            .show();
-
-                }
-
-            }
-        });
-
-        layoutAgain = (LinearLayout) view.findViewById(R.id.buttonKarma10Again);
-        layoutAgain.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                try {
-                    ((MaterialSettingsActivity)getActivity()).mHelper.launchPurchaseFlow(getActivity(), "donate_10_consumable", 10, ((MaterialSettingsActivity)getActivity()).mPurchaseFinishedListener, "10");
-                } catch (IllegalStateException ise) {
-                    new AlertDialog.Builder(getActivity())
-                            .setTitle(R.string.alert_noiab_title)
-                            .setMessage(R.string.alert_noiab_content)
-                            .setNeutralButton("OK", new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int which) {
-                                }
-                            })
-                            .setIcon(android.R.drawable.ic_dialog_alert)
-                            .show();
-
-                }
-
-            }
-        });
-
-        TextView helpFurtherButton = (TextView) view.findViewById(R.id.buttonHelpFurther);
-        final LinearLayout expanded = (LinearLayout) view.findViewById(R.id.layoutExpandedDonateAgain);
-        final ScrollView scroll = (ScrollView) view.findViewById(R.id.scrollView);
-        helpFurtherButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                expanded.setVisibility(View.VISIBLE);
-                scroll.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        scroll.fullScroll(View.FOCUS_DOWN);
-                    }
-                });
-            }
-        });
-    }
-
-    private void setupResetStatsButton(final View view) {
-        TextView resetStatsButton = (TextView)view.findViewById(R.id.buttonResetStats);
-        resetStatsButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View textView) {
-                new AlertDialog.Builder(getActivity())
-                        .setTitle(R.string.alert_delete_stats_title)
-                        .setMessage(R.string.alert_delete_stats_content)
-                        .setPositiveButton(R.string.dialog_delete, new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                UnbounceStatsCollection.getInstance().resetStats(getActivity(), UnbounceStatsCollection.STAT_CURRENT);
-
-                                Intent intent = new Intent(XposedReceiver.RESET_ACTION);
-                                intent.putExtra(XposedReceiver.STAT_TYPE, UnbounceStatsCollection.STAT_CURRENT);
-                                try {
-                                    getActivity().sendBroadcast(intent);
-                                } catch (IllegalStateException ise) {
-
-                                }
-                                loadStatsFromSource(view);
-                            }
-                        })
-                        .setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                // do nothing
-                            }
-                        })
-                        .setIcon(android.R.drawable.ic_dialog_alert)
-                        .show();
-            }
-        });
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-    }
-
-
-    private boolean isXposedInstalled() {
-
-        PackageManager pm = getActivity().getPackageManager();
-
-        try {
-            pm.getPackageInfo("de.robv.android.xposed.installer", PackageManager.GET_ACTIVITIES);
-            return true;
-        }
-        catch (PackageManager.NameNotFoundException e) {
-            return false;
-        }
-    }
-
-    private boolean isInstalledFromPlay() {
-        String installer = getActivity().getPackageManager().getInstallerPackageName("com.ryansteckler.nlpunbounce");
-
-        if (installer == null) {
-            return false;
-        }
-        else {
-            return installer.equals("com.android.vending");
-        }
-    }
-
-    private boolean launchXposedModules() {
-        Intent LaunchIntent = null;
-
-        try {
-            LaunchIntent = getActivity().getPackageManager().getLaunchIntentForPackage("de.robv.android.xposed.installer");
-            if (LaunchIntent == null) {
-                return false;
-            } else {
-                Intent intent = new Intent("de.robv.android.xposed.installer.OPEN_SECTION");
-                intent.setPackage("de.robv.android.xposed.installer");
-                intent.putExtra("section", "modules");
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(intent);
-            }
-        } catch (Exception e) {
-            if (LaunchIntent != null) {
-                LaunchIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(LaunchIntent);
-            } else {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    private boolean launchXposedFramework() {
-        Intent LaunchIntent = null;
-
-        try {
-            LaunchIntent = getActivity().getPackageManager().getLaunchIntentForPackage("de.robv.android.xposed.installer");
-            if (LaunchIntent == null) {
-                return false;
-            } else {
-                Intent intent = new Intent("de.robv.android.xposed.installer.OPEN_SECTION");
-                intent.setPackage("de.robv.android.xposed.installer");
-                intent.putExtra("section", "install");
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(intent);
-            }
-        } catch (Exception e) {
-            if (LaunchIntent != null) {
-                LaunchIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(LaunchIntent);
-            } else {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    private BroadcastReceiver refreshReceiver;
-
-    @Override
-    public void onHiddenChanged(boolean hidden) {
-        super.onHiddenChanged(hidden);
-        if (!hidden)
-        {
-            updatePremiumUi();
-        }
-    }
-
-
-    private void updatePremiumUi() {
-        if (((MaterialSettingsActivity)getActivity()).isPremium()) {
-            View againView = (View) getActivity().findViewById(R.id.layoutDonateAgain);
-            againView.setVisibility(View.VISIBLE);
-            View donateView = (View) getActivity().findViewById(R.id.layoutDonate);
-            donateView.setVisibility(View.GONE);
-        }
-    }
-
-    private void loadStatsFromSource(final View view) {
-        final UnbounceStatsCollection stats = UnbounceStatsCollection.getInstance();
-        final Context c = getActivity();
-        stats.loadStats(c, true);
-        String duration = stats.getWakelockDurationAllowedFormatted(c, UnbounceStatsCollection.STAT_CURRENT);
-        //Wakelocks
-        TextView textView = (TextView)view.findViewById(R.id.textLocalWakeTimeAllowed);
-        textView.setText(duration);
-        textView = (TextView)view.findViewById(R.id.textRunningSince);
-        textView.setText(stats.getRunningSinceFormatted());
-        textView = (TextView)view.findViewById(R.id.textLocalWakeAcquired);
-        textView.setText(String.valueOf(stats.getTotalAllowedWakelockCount(c, UnbounceStatsCollection.STAT_CURRENT)));
-        textView = (TextView)view.findViewById(R.id.textLocalWakeBlocked);
-        textView.setText(String.valueOf(stats.getTotalBlockWakelockCount(c, UnbounceStatsCollection.STAT_CURRENT)));
-        textView = (TextView)view.findViewById(R.id.textLocalWakeTimeBlocked);
-        textView.setText(stats.getWakelockDurationBlockedFormatted(c, UnbounceStatsCollection.STAT_CURRENT));
-
-        //Services
-        textView = (TextView)view.findViewById(R.id.textLocalServiceAcquired);
-        textView.setText(String.valueOf(stats.getTotalAllowedServiceCount(c, UnbounceStatsCollection.STAT_CURRENT)));
-        textView = (TextView)view.findViewById(R.id.textLocalServiceBlocked);
-        textView.setText(String.valueOf(stats.getTotalBlockServiceCount(c, UnbounceStatsCollection.STAT_CURRENT)));
-
-        //Alarms
-        textView = (TextView)view.findViewById(R.id.textLocalAlarmsAcquired);
-        textView.setText(String.valueOf(stats.getTotalAllowedAlarmCount(c, UnbounceStatsCollection.STAT_CURRENT)));
-        textView = (TextView)view.findViewById(R.id.textLocalAlarmsBlocked);
-        textView.setText(String.valueOf(stats.getTotalBlockAlarmCount(c, UnbounceStatsCollection.STAT_CURRENT)));
-
-        //Global wakelocks.
-        //Kick off a refresh
-
-        SharedPreferences prefs = getActivity().getSharedPreferences("com.ryansteckler.nlpunbounce" + "_preferences", Context.MODE_WORLD_READABLE);
-        if (prefs.getBoolean("global_participation", true)) {
-            stats.getStatsFromNetwork(c, new Handler() {
-            @Override
-            public void handleMessage(Message msg) {
-                //Global wakelocks
-                TextView textView = (TextView)view.findViewById(R.id.textGlobalWakelockDurationAllowed);
-                textView.setText(stats.getWakelockDurationAllowedFormatted(c, UnbounceStatsCollection.STAT_GLOBAL));
-                textView = (TextView)view.findViewById(R.id.textGlobalWakelockAllowed);
-                textView.setText(String.valueOf(stats.getTotalAllowedWakelockCount(c, UnbounceStatsCollection.STAT_GLOBAL)));
-                textView = (TextView)view.findViewById(R.id.textGlobalWakelockBlocked);
-                textView.setText(String.valueOf(stats.getTotalBlockWakelockCount(c, UnbounceStatsCollection.STAT_GLOBAL)));
-                textView = (TextView)view.findViewById(R.id.textGlobalWakelockDurationBlocked);
-                textView.setText(stats.getWakelockDurationBlockedFormatted(c, UnbounceStatsCollection.STAT_GLOBAL));
-
-                //Global services
-                textView = (TextView)view.findViewById(R.id.textGlobalServiceAllowed);
-                textView.setText(String.valueOf(stats.getTotalAllowedServiceCount(c, UnbounceStatsCollection.STAT_GLOBAL)));
-                textView = (TextView)view.findViewById(R.id.textGlobalServiceBlocked);
-                textView.setText(String.valueOf(stats.getTotalBlockServiceCount(c, UnbounceStatsCollection.STAT_GLOBAL)));
-
-                //Global Alarms
-                textView = (TextView)view.findViewById(R.id.textGlobalAlarmAllowed);
-                textView.setText(String.valueOf(stats.getTotalAllowedAlarmCount(c, UnbounceStatsCollection.STAT_GLOBAL)));
-                textView = (TextView)view.findViewById(R.id.textGlobalAlarmBlocked);
-                textView.setText(String.valueOf(stats.getTotalBlockAlarmCount(c, UnbounceStatsCollection.STAT_GLOBAL)));
-
-                    }
-        });
-        } else {
-            //Global wakelocks
-            textView = (TextView)view.findViewById(R.id.textGlobalWakelockDurationAllowed);
-            textView.setText(getResources().getString(R.string.stat_disabled));
-            textView = (TextView)view.findViewById(R.id.textGlobalWakelockAllowed);
-            textView.setText(getResources().getString(R.string.stat_disabled));
-            textView = (TextView)view.findViewById(R.id.textGlobalWakelockBlocked);
-            textView.setText(getResources().getString(R.string.stat_disabled));
-            textView = (TextView)view.findViewById(R.id.textGlobalWakelockDurationBlocked);
-            textView.setText(getResources().getString(R.string.stat_disabled));
-
-            //Global services
-            textView = (TextView)view.findViewById(R.id.textGlobalServiceAllowed);
-            textView.setText(getResources().getString(R.string.stat_disabled));
-            textView = (TextView)view.findViewById(R.id.textGlobalServiceBlocked);
-            textView.setText(getResources().getString(R.string.stat_disabled));
-
-            //Global Alarms
-            textView = (TextView)view.findViewById(R.id.textGlobalAlarmAllowed);
-            textView.setText(getResources().getString(R.string.stat_disabled));
-            textView = (TextView)view.findViewById(R.id.textGlobalAlarmBlocked);
-            textView.setText(getResources().getString(R.string.stat_disabled));
-
-        }
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-
-        View rootView = inflater.inflate(R.layout.fragment_home, container, false);
-        return rootView;
-    }
-
-
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-
-        try {
-            mListener = (OnFragmentInteractionListener) activity;
-        } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
-    }
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        // Prevent menu items from crossing fragments
-        menu.clear();
-
-        getActivity().getMenuInflater().inflate(R.menu.home, menu);
-        super.onCreateOptionsMenu(menu, inflater);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-
-        if (id == R.id.action_refresh) {
-            requestRefresh();
-
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    private void requestRefresh() {
-        Intent intent = new Intent(XposedReceiver.REFRESH_ACTION);
-        try {
-            getActivity().sendBroadcast(intent);
-        } catch (IllegalStateException ise) {
-
-        }
-    }
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnFragmentInteractionListener {
-        public void onHomeSetTitle(String id);
-    }
-
-    private void animateButtonContainer(final ViewGroup container) {
-        LayoutTransition lt = container.getLayoutTransition();
-        if (lt == null) {
-            lt = new LayoutTransition();
-        }
-        lt.enableTransitionType(LayoutTransition.APPEARING);
-        lt.disableTransitionType(LayoutTransition.DISAPPEARING);
-        lt.setDuration(300);
-        container.setLayoutTransition(lt);
-    }
-
-    private void setupBannerAnimations(ViewGroup container) {
-        AnimatorSet animatorDisappear = getDisappearAnimation(container);
-        AnimatorSet animatorAppear = getAppearAnimation(container);
-
-        LayoutTransition lt = container.getLayoutTransition();
-        if (lt == null) {
-            lt = new LayoutTransition();
-        }
-        lt.setAnimator(LayoutTransition.DISAPPEARING, animatorDisappear);
-        lt.setAnimator(LayoutTransition.APPEARING, animatorAppear);
-        lt.setStartDelay(LayoutTransition.APPEARING, 0);
-        lt.setDuration(300);
-        container.setLayoutTransition(lt);
-
-    }
-
-    private AnimatorSet getDisappearAnimation(ViewGroup container) {
-        float endLocation = container.getHeight();
-        DisplayMetrics metrics = Resources.getSystem().getDisplayMetrics();
-        float dp = endLocation / (metrics.densityDpi / 160f);
-
-        AnimatorSet animator = new AnimatorSet();
-        ObjectAnimator moveBanner = ObjectAnimator.ofFloat(null, View.TRANSLATION_Y, 0, dp);
-        ObjectAnimator fadeBanner = ObjectAnimator.ofFloat(null, View.ALPHA, 1, 0);
-        animator.playTogether(moveBanner, fadeBanner);
-        return animator;
-    }
-
-    private AnimatorSet getAppearAnimation(ViewGroup container) {
-        float endLocation = container.getHeight() * -1;
-        DisplayMetrics metrics = Resources.getSystem().getDisplayMetrics();
-        float dp = endLocation / (metrics.densityDpi / 160f);
-
-        AnimatorSet animator = new AnimatorSet();
-        ObjectAnimator moveBanner = ObjectAnimator.ofFloat(null, View.TRANSLATION_Y, dp, 0);
-        ObjectAnimator fadeBanner = ObjectAnimator.ofFloat(null, View.ALPHA, 0, 1);
-        animator.playTogether(moveBanner, fadeBanner);
-        return animator;
-    }
-
-
-    public boolean isUnbounceServiceRunning() {
-        //The Unbounce hook changes this to true.
-        return false;
-    }
-
-    public String getAmplifyKernelVersion() {
-        //The Unbounce hook changes this to true.
-        return "0";
-    }
-
-
-
-    public boolean isXposedRunning() {
-//        return true;
-        return new File("/data/data/de.robv.android.xposed.installer/bin/XposedBridge.jar").exists();
     }
 
 

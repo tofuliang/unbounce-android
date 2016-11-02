@@ -1,17 +1,15 @@
 package com.ryansteckler.nlpunbounce;
 
 import android.app.AlertDialog;
+import android.app.Fragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.app.Fragment;
 import android.util.TypedValue;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -26,8 +24,6 @@ import android.widget.ImageButton;
 import android.widget.Switch;
 import android.widget.TextView;
 
-import com.ryansteckler.nlpunbounce.helpers.UidNameResolver;
-import com.ryansteckler.nlpunbounce.models.EventLookup;
 import com.ryansteckler.nlpunbounce.models.UnbounceStatsCollection;
 
 import java.io.UnsupportedEncodingException;
@@ -41,12 +37,15 @@ import java.net.URLEncoder;
  * to handle interaction events.
  * Use the {@link AlarmDetailFragment#newInstance} factory method to
  * create an instance of this fragment.
- *
  */
 public class AlarmDetailFragment extends BaseDetailFragment {
 
+    public AlarmDetailFragment() {
+        // Required empty public constructor
+    }
+
     public long getSeconds() {
-        EditText editSeconds = (EditText)getActivity().findViewById(R.id.editAlarmSeconds);
+        EditText editSeconds = (EditText) getActivity().findViewById(R.id.editAlarmSeconds);
         String text = editSeconds.getText().toString();
         long seconds = Long.parseLong(text);
         return seconds;
@@ -60,8 +59,8 @@ public class AlarmDetailFragment extends BaseDetailFragment {
         String descriptionText = description.getText().toString();
 
         descriptionText = "Package Name: " + mStat.getDerivedPackageName(getActivity().getApplicationContext()) + "\n" +
-            "Full Name: " + mStat.getName() + "\n\n" +
-            descriptionText;
+                "Full Name: " + mStat.getName() + "\n\n" +
+                descriptionText;
 
         description.setText(descriptionText);
 
@@ -116,7 +115,7 @@ public class AlarmDetailFragment extends BaseDetailFragment {
 
         getView().findViewById(R.id.editAlarmSeconds).setEnabled(onOff.isChecked());
 
-        View panel = (View)getView().findViewById(R.id.settingsPanel);
+        View panel = (View) getView().findViewById(R.id.settingsPanel);
         TypedValue backgroundValue = new TypedValue();
         Resources.Theme theme = getActivity().getTheme();
         int resId = enabled ? R.attr.background_panel_enabled : R.attr.background_panel_disabled;
@@ -142,12 +141,11 @@ public class AlarmDetailFragment extends BaseDetailFragment {
             }
             textView.clearFocus();
             // hide virtual keyboard
-            InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+            InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(edit.getWindowToken(), 0);
             return true;
 
-        } catch (NumberFormatException nfe)
-        {
+        } catch (NumberFormatException nfe) {
             //Not a number.  Android let us down.
         }
         return false;
@@ -156,25 +154,24 @@ public class AlarmDetailFragment extends BaseDetailFragment {
     @Override
     protected void warnUnknown(final Switch onOff) {
         new AlertDialog.Builder(getActivity())
-            .setTitle(R.string.alert_unknown_alarm_title)
-            .setMessage(R.string.alert_unknown_alarm_content)
-            .setPositiveButton(R.string.dialog_unbounce, new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int which) {
-                    onOff.setChecked(true);
-                    updateEnabled(true);
-                }
-            })
-            .setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int which) {
-                    //don't set the switch
-                    onOff.setChecked(false);
-                    updateEnabled(false);
-                }
-            })
-            .setIcon(android.R.drawable.ic_dialog_alert)
-            .show();
+                .setTitle(R.string.alert_unknown_alarm_title)
+                .setMessage(R.string.alert_unknown_alarm_content)
+                .setPositiveButton(R.string.dialog_unbounce, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        onOff.setChecked(true);
+                        updateEnabled(true);
+                    }
+                })
+                .setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        //don't set the switch
+                        onOff.setChecked(false);
+                        updateEnabled(false);
+                    }
+                })
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .show();
     }
-
 
     @Override
     protected void updateEnabled(boolean b) {
@@ -188,7 +185,7 @@ public class AlarmDetailFragment extends BaseDetailFragment {
 
         //Enable or disable the seconds setting.
         getView().findViewById(R.id.editAlarmSeconds).setEnabled(b);
-        View panel = (View)getView().findViewById(R.id.settingsPanel);
+        View panel = (View) getView().findViewById(R.id.settingsPanel);
         TypedValue backgroundValue = new TypedValue();
         Resources.Theme theme = getActivity().getTheme();
         int resId = b ? R.attr.background_panel_enabled : R.attr.background_panel_disabled;
@@ -200,8 +197,7 @@ public class AlarmDetailFragment extends BaseDetailFragment {
         panel.setBackgroundDrawable(backgroundColor);
         panel.setAlpha(b ? 1 : (float) .4);
 
-        if (mClearListener != null)
-        {
+        if (mClearListener != null) {
             mClearListener.onCleared();
         }
     }
@@ -211,19 +207,15 @@ public class AlarmDetailFragment extends BaseDetailFragment {
         UnbounceStatsCollection coll = UnbounceStatsCollection.getInstance();
         mStat = coll.getAlarmStats(getActivity(), mStat.getName());
 
-        TextView textView = (TextView)view.findViewById(R.id.textLocalBlocked);
+        TextView textView = (TextView) view.findViewById(R.id.textLocalBlocked);
         textView.setText(String.valueOf(mStat.getBlockCount()));
-        textView = (TextView)view.findViewById(R.id.textLocalAcquired);
+        textView = (TextView) view.findViewById(R.id.textLocalAcquired);
         textView.setText(String.valueOf(mStat.getAllowedCount()));
     }
 
     @Override
     public AlarmDetailFragment newInstance() {
         return new AlarmDetailFragment();
-    }
-
-    public AlarmDetailFragment() {
-        // Required empty public constructor
     }
 
     @Override

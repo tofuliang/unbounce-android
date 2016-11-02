@@ -26,7 +26,7 @@ public class AlarmStats extends BaseStats implements Serializable {
 
     @Override
     public String getDerivedPackageName(Context ctx) {
-        if (null== getDerivedPackageName()){
+        if (null == getDerivedPackageName()) {
             UidNameResolver resolver = UidNameResolver.getInstance(ctx);
             String packName = resolver.getLabel(this.getPackage());
             if (null != packName) {

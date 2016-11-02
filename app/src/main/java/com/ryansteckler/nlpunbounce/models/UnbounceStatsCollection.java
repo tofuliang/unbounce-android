@@ -10,11 +10,7 @@ import android.os.Message;
 import android.os.SystemClock;
 import android.util.Log;
 
-//import com.google.gson.Gson;
-//import com.google.gson.GsonBuilder;
-//import com.google.gson.reflect.TypeToken;
 import com.ryansteckler.nlpunbounce.ActivityReceiver;
-//import com.ryansteckler.nlpunbounce.XposedReceiver;
 import com.ryansteckler.nlpunbounce.helpers.NetworkHelper;
 import com.ryansteckler.nlpunbounce.hooks.Wakelocks;
 
@@ -27,7 +23,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.io.StreamCorruptedException;
-//import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -37,44 +32,44 @@ import de.robv.android.xposed.XSharedPreferences;
 
 import static com.ryansteckler.nlpunbounce.helpers.LocaleHelper.getFormattedTime;
 
+//import com.google.gson.Gson;
+//import com.google.gson.GsonBuilder;
+//import com.google.gson.reflect.TypeToken;
+//import com.ryansteckler.nlpunbounce.XposedReceiver;
+//import java.lang.reflect.Type;
+
 /**
  * Created by rsteckler on 9/5/14.
  */
 public class UnbounceStatsCollection implements Serializable {
 
-//    final private static String URL_STATS = "http://localhost:8080/stats";
+    public static final int STAT_CURRENT = 0;
+    public static final int STAT_GLOBAL = 1;
+    public static final int STAT_PUSH = 2;
+    //    final private static String URL_STATS = "http://localhost:8080/stats";
     final private static String URL_STATS = "http://unbounce-server-1.appspot.com/stats";
-
     final private static String STATS_DIRECTORY = "/data/data/com.ryansteckler.nlpunbounce/files/";
     final private static String STATS_FILENAME_CURRENT = "nlpunbounce.stats";
     final private static String STATS_FILENAME_GLOBAL = "nlpunbounce.global.stats";
     final private static String STATS_FILENAME_PUSH = "nlpunbounce.push.stats";
+    private static UnbounceStatsCollection mInstance = null;
     HashMap<String, BaseStats> mCurrentStats = null;
     HashMap<String, Long> mGlobalStats = null;
     HashMap<String, BaseStats> mSincePushStats = null;
+    long mLastPush = 0;
+    long mPushTimeFrequency = 86400000; //Push every 24 hours
     private long mRunningSince = 0;
     private boolean mGlobalParticipation = true;
 
-    public static final int STAT_CURRENT = 0;
-    public static final int STAT_GLOBAL = 1;
-    public static final int STAT_PUSH = 2;
+    private UnbounceStatsCollection() {
+        mRunningSince = System.currentTimeMillis();
+    }
 
-    long mLastPush = 0;
-    long mPushTimeFrequency = 86400000; //Push every 24 hours
-
-    private static UnbounceStatsCollection mInstance = null;
-
-    public static UnbounceStatsCollection getInstance()
-    {
-        if (mInstance == null)
-        {
+    public static UnbounceStatsCollection getInstance() {
+        if (mInstance == null) {
             mInstance = new UnbounceStatsCollection();
         }
         return mInstance;
-    }
-
-    private UnbounceStatsCollection() {
-        mRunningSince = System.currentTimeMillis();
     }
 
     public Long getRunningSince() {
@@ -95,7 +90,7 @@ public class UnbounceStatsCollection implements Serializable {
         running -= TimeUnit.MINUTES.toMillis(minutes);
         long seconds = TimeUnit.MILLISECONDS.toSeconds(running);
 
-        return getFormattedTime(years,days,hours,minutes,seconds);
+        return getFormattedTime(years, days, hours, minutes, seconds);
 
     }
 
@@ -116,7 +111,7 @@ public class UnbounceStatsCollection implements Serializable {
     }
 
     public ArrayList<BaseStats> toWakelockArrayList(Context context) {
-        loadStats(context, false); 
+        loadStats(context, false);
         ArrayList<BaseStats> bases = new ArrayList<BaseStats>(mCurrentStats.values());
         ArrayList<BaseStats> wakelocks = new ArrayList<BaseStats>();
         Iterator<BaseStats> iter = bases.iterator();
@@ -132,16 +127,14 @@ public class UnbounceStatsCollection implements Serializable {
         return wakelocks;
     }
 
-    public ArrayList<BaseStats> toServiceArrayList(Context context)
-    {
-        loadStats(context, false); 
+    public ArrayList<BaseStats> toServiceArrayList(Context context) {
+        loadStats(context, false);
         ArrayList<BaseStats> bases = new ArrayList<BaseStats>(mCurrentStats.values());
         ArrayList<BaseStats> services = new ArrayList<BaseStats>();
         Iterator<BaseStats> iter = bases.iterator();
 
         //TODO:  There are WAY better ways to do this, other than copying arrays.
-        while (iter.hasNext())
-        {
+        while (iter.hasNext()) {
             BaseStats curStat = iter.next();
             if (curStat instanceof ServiceStats) {
                 services.add(curStat);
@@ -163,15 +156,14 @@ public class UnbounceStatsCollection implements Serializable {
             }
         } else if (statType == STAT_CURRENT) {
             HashMap<String, BaseStats> statChoice = null;
-            loadStats(context, false); 
+            loadStats(context, false);
 
             //Iterate over all wakelocks and return the duration
             Iterator<BaseStats> iter = mCurrentStats.values().iterator();
-            while (iter.hasNext())
-            {
+            while (iter.hasNext()) {
                 BaseStats curStat = iter.next();
                 if (curStat instanceof WakelockStats) {
-                    totalDuration += ((WakelockStats)(curStat)).getAllowedDuration();
+                    totalDuration += ((WakelockStats) (curStat)).getAllowedDuration();
                 }
             }
         }
@@ -187,22 +179,20 @@ public class UnbounceStatsCollection implements Serializable {
         totalDuration -= TimeUnit.MINUTES.toMillis(minutes);
         long seconds = TimeUnit.MILLISECONDS.toSeconds(totalDuration);
 
-        return getFormattedTime(years,days,hours,minutes,seconds);
+        return getFormattedTime(years, days, hours, minutes, seconds);
 
     }
 
-    public WakelockStats getWakelockStats(Context context, String wakelockName)
-    {
-        loadStats(context, false); 
+    public WakelockStats getWakelockStats(Context context, String wakelockName) {
+        loadStats(context, false);
         if (mCurrentStats.containsKey(wakelockName)) {
             BaseStats base = mCurrentStats.get(wakelockName);
             if (base instanceof WakelockStats)
-                return (WakelockStats)base;
+                return (WakelockStats) base;
             else
                 return null;
-        }
-        else {
-            WakelockStats emptyStat = new WakelockStats(wakelockName,-1);
+        } else {
+            WakelockStats emptyStat = new WakelockStats(wakelockName, -1);
             emptyStat.setAllowedCount(0);
             emptyStat.setAllowedDuration(0);
             emptyStat.setBlockCount(0);
@@ -212,18 +202,16 @@ public class UnbounceStatsCollection implements Serializable {
         }
     }
 
-    public ServiceStats getServiceStats(Context context, String serviceName)
-    {
-        loadStats(context, false); 
+    public ServiceStats getServiceStats(Context context, String serviceName) {
+        loadStats(context, false);
         if (mCurrentStats.containsKey(serviceName)) {
             BaseStats base = mCurrentStats.get(serviceName);
             if (base instanceof ServiceStats)
-                return (ServiceStats)base;
+                return (ServiceStats) base;
             else
                 return null;
-        }
-        else {
-            ServiceStats emptyStat = new ServiceStats(serviceName,-1);
+        } else {
+            ServiceStats emptyStat = new ServiceStats(serviceName, -1);
             emptyStat.setAllowedCount(0);
             emptyStat.setBlockCount(0);
             emptyStat.setName(serviceName);
@@ -232,19 +220,18 @@ public class UnbounceStatsCollection implements Serializable {
         }
     }
 
-    public AlarmStats getAlarmStats(Context context, String alarmName)
-    {
+    public AlarmStats getAlarmStats(Context context, String alarmName) {
         HashMap<String, BaseStats> statChoice = null;
-        loadStats(context, false); 
+        loadStats(context, false);
 
         if (mCurrentStats.containsKey(alarmName)) {
             BaseStats base = mCurrentStats.get(alarmName);
             if (base instanceof AlarmStats)
-                return (AlarmStats)base;
+                return (AlarmStats) base;
             else
                 return null;
         } else {
-            AlarmStats emptyStat = new AlarmStats(alarmName,"");
+            AlarmStats emptyStat = new AlarmStats(alarmName, "");
             emptyStat.setAllowedCount(0);
             emptyStat.setBlockCount(0);
             mCurrentStats.put(alarmName, emptyStat);
@@ -262,11 +249,10 @@ public class UnbounceStatsCollection implements Serializable {
                 }
             }
         } else if (statType == STAT_CURRENT) {
-            loadStats(context, false); 
+            loadStats(context, false);
             //Iterate over all stats and return the duration
             Iterator<BaseStats> iter = mCurrentStats.values().iterator();
-            while (iter.hasNext())
-            {
+            while (iter.hasNext()) {
                 BaseStats curStat = iter.next();
                 if (curStat instanceof WakelockStats) {
                     totalDuration += ((WakelockStats) curStat).getBlockedDuration();
@@ -286,12 +272,11 @@ public class UnbounceStatsCollection implements Serializable {
         totalDuration -= TimeUnit.MINUTES.toMillis(minutes);
         long seconds = TimeUnit.MILLISECONDS.toSeconds(totalDuration);
 
-        return getFormattedTime(years,days,hours,minutes,seconds);
+        return getFormattedTime(years, days, hours, minutes, seconds);
 
     }
 
-    public long getTotalAllowedWakelockCount(Context context, int statType)
-    {
+    public long getTotalAllowedWakelockCount(Context context, int statType) {
         long totalCount = 0;
         if (statType == STAT_GLOBAL) {
             if (mGlobalStats != null) {
@@ -300,7 +285,7 @@ public class UnbounceStatsCollection implements Serializable {
                 }
             }
         } else if (statType == STAT_CURRENT) {
-            loadStats(context, false); 
+            loadStats(context, false);
 
             for (BaseStats curStat : mCurrentStats.values()) {
 
@@ -312,8 +297,7 @@ public class UnbounceStatsCollection implements Serializable {
         return totalCount;
     }
 
-    public long getTotalAllowedServiceCount(Context context, int statType)
-    {
+    public long getTotalAllowedServiceCount(Context context, int statType) {
         long totalCount = 0;
         if (statType == STAT_GLOBAL) {
             if (mGlobalStats != null) {
@@ -322,10 +306,9 @@ public class UnbounceStatsCollection implements Serializable {
                 }
             }
         } else if (statType == STAT_CURRENT) {
-            loadStats(context, false); 
+            loadStats(context, false);
             Iterator<BaseStats> iter = mCurrentStats.values().iterator();
-            while (iter.hasNext())
-            {
+            while (iter.hasNext()) {
                 BaseStats curStat = iter.next();
                 if (curStat instanceof ServiceStats)
                     totalCount += curStat.getAllowedCount();
@@ -335,8 +318,7 @@ public class UnbounceStatsCollection implements Serializable {
         return totalCount;
     }
 
-    public long getTotalBlockWakelockCount(Context context, int statType)
-    {
+    public long getTotalBlockWakelockCount(Context context, int statType) {
         long totalCount = 0;
         if (statType == STAT_GLOBAL) {
             if (mGlobalStats != null) {
@@ -345,7 +327,7 @@ public class UnbounceStatsCollection implements Serializable {
                 }
             }
         } else if (statType == STAT_CURRENT) {
-            loadStats(context, false); 
+            loadStats(context, false);
 
             for (BaseStats curStat : mCurrentStats.values()) {
 
@@ -359,8 +341,7 @@ public class UnbounceStatsCollection implements Serializable {
         return totalCount;
     }
 
-    public long getTotalBlockServiceCount(Context context, int statType)
-    {
+    public long getTotalBlockServiceCount(Context context, int statType) {
         long totalCount = 0;
         if (statType == STAT_GLOBAL) {
             if (mGlobalStats != null) {
@@ -369,10 +350,9 @@ public class UnbounceStatsCollection implements Serializable {
                 }
             }
         } else if (statType == STAT_CURRENT) {
-            loadStats(context, false); 
+            loadStats(context, false);
             Iterator<BaseStats> iter = mCurrentStats.values().iterator();
-            while (iter.hasNext())
-            {
+            while (iter.hasNext()) {
                 BaseStats curStat = iter.next();
                 if (curStat instanceof ServiceStats)
                     totalCount += curStat.getBlockCount();
@@ -383,8 +363,7 @@ public class UnbounceStatsCollection implements Serializable {
         return totalCount;
     }
 
-    public long getTotalAllowedAlarmCount(Context context, int statType)
-    {
+    public long getTotalAllowedAlarmCount(Context context, int statType) {
         long totalCount = 0;
         if (statType == STAT_GLOBAL) {
             if (mGlobalStats != null) {
@@ -393,7 +372,7 @@ public class UnbounceStatsCollection implements Serializable {
                 }
             }
         } else if (statType == STAT_CURRENT) {
-            loadStats(context, false); 
+            loadStats(context, false);
 
             for (BaseStats curStat : mCurrentStats.values()) {
 
@@ -406,8 +385,7 @@ public class UnbounceStatsCollection implements Serializable {
         return totalCount;
     }
 
-    public long getTotalBlockAlarmCount(Context context, int statType)
-    {
+    public long getTotalBlockAlarmCount(Context context, int statType) {
         long totalCount = 0;
         if (statType == STAT_GLOBAL) {
             if (mGlobalStats != null) {
@@ -416,7 +394,7 @@ public class UnbounceStatsCollection implements Serializable {
                 }
             }
         } else if (statType == STAT_CURRENT) {
-            loadStats(context, false); 
+            loadStats(context, false);
 
             for (BaseStats curStat : mCurrentStats.values()) {
 
@@ -427,10 +405,9 @@ public class UnbounceStatsCollection implements Serializable {
         return totalCount;
     }
 
-    public void addInterimWakelock(Context context, InterimEvent toAdd)
-    {
+    public void addInterimWakelock(Context context, InterimEvent toAdd) {
         //Load from disk and populate our stats
-        loadStats(context, false); 
+        loadStats(context, false);
 
         addInterimWakelock(toAdd, mCurrentStats);
         if (mGlobalParticipation) {
@@ -442,22 +419,20 @@ public class UnbounceStatsCollection implements Serializable {
 
     private void addInterimWakelock(InterimEvent toAdd, HashMap<String, BaseStats> statChoice) {
         BaseStats combined = statChoice.get(toAdd.getName());
-        if (combined == null)
-        {
-            combined = new WakelockStats(toAdd.getName(),toAdd.getUId());
+        if (combined == null) {
+            combined = new WakelockStats(toAdd.getName(), toAdd.getUId());
         }
         if (combined instanceof WakelockStats) {
-            ((WakelockStats)combined).addDurationAllowed(toAdd.getTimeStopped() - toAdd.getTimeStarted());
-            ((WakelockStats)combined).setUid(toAdd.getUId());
+            ((WakelockStats) combined).addDurationAllowed(toAdd.getTimeStopped() - toAdd.getTimeStarted());
+            ((WakelockStats) combined).setUid(toAdd.getUId());
             combined.incrementAllowedCount();
             statChoice.put(toAdd.getName(), combined);
         }
     }
 
-    public void incrementWakelockBlock(Context context, String statName, int uId)
-    {
+    public void incrementWakelockBlock(Context context, String statName, int uId) {
         //Load from disk and populate our stats
-        loadStats(context, false); 
+        loadStats(context, false);
 
         incrementWakelockBlock(statName, mCurrentStats, uId);
         if (mGlobalParticipation) {
@@ -468,9 +443,8 @@ public class UnbounceStatsCollection implements Serializable {
 
     private void incrementWakelockBlock(String statName, HashMap<String, BaseStats> statChoice, int uId) {
         BaseStats combined = statChoice.get(statName);
-        if (combined == null)
-        {
-            combined = new WakelockStats(statName,uId);
+        if (combined == null) {
+            combined = new WakelockStats(statName, uId);
 
         }
         combined.setUid(uId);
@@ -478,10 +452,9 @@ public class UnbounceStatsCollection implements Serializable {
         statChoice.put(statName, combined);
     }
 
-    public void incrementServiceBlock(Context context, String statName,  int uId)
-    {
+    public void incrementServiceBlock(Context context, String statName, int uId) {
         //Load from disk and populate our stats
-        loadStats(context, false); 
+        loadStats(context, false);
 
         incrementServiceBlock(statName, mCurrentStats, uId);
         if (mGlobalParticipation) {
@@ -492,60 +465,59 @@ public class UnbounceStatsCollection implements Serializable {
 
     private void incrementServiceBlock(String statName, HashMap<String, BaseStats> statChoice, int uId) {
         BaseStats combined = statChoice.get(statName);
-        if (combined == null)
-        {
+        if (combined == null) {
             combined = new ServiceStats(statName, uId);
-                   }
+        }
         combined.setUid(uId);
         combined.incrementBlockCount();
         statChoice.put(statName, combined);
     }
 
-   
-    public void incrementAlarmBlock(Context context, String statName,String packageName) {
-        //Load from disk and populate our stats
-        loadStats(context, false); 
 
-        incrementAlarmBlock(statName, mCurrentStats,packageName);
+    public void incrementAlarmBlock(Context context, String statName, String packageName) {
+        //Load from disk and populate our stats
+        loadStats(context, false);
+
+        incrementAlarmBlock(statName, mCurrentStats, packageName);
         if (mGlobalParticipation) {
-            incrementAlarmBlock(statName, mSincePushStats,packageName);
+            incrementAlarmBlock(statName, mSincePushStats, packageName);
         }
 
     }
 
-    private void incrementAlarmBlock(String statName, HashMap<String, BaseStats> statChoice,String packageName) {
+    private void incrementAlarmBlock(String statName, HashMap<String, BaseStats> statChoice, String packageName) {
         BaseStats combined = statChoice.get(statName);
         if (combined == null) {
-            combined = new AlarmStats(statName,packageName);
+            combined = new AlarmStats(statName, packageName);
         }
         combined.setPackage(packageName);
         combined.incrementBlockCount();
         statChoice.put(statName, combined);
     }
 
-    public void incrementAlarmAllowed(Context context, String statName,String packageName) {
+    public void incrementAlarmAllowed(Context context, String statName, String packageName) {
         //Load from disk and populate our stats
-        loadStats(context, false); 
-        incrementAlarmAllowed(statName, mCurrentStats,packageName);
+        loadStats(context, false);
+        incrementAlarmAllowed(statName, mCurrentStats, packageName);
         if (mGlobalParticipation) {
-            incrementAlarmAllowed(statName, mSincePushStats,packageName);
+            incrementAlarmAllowed(statName, mSincePushStats, packageName);
         }
 
     }
 
-    private void incrementAlarmAllowed(String statName, HashMap<String, BaseStats> statChoice,String packageName) {
+    private void incrementAlarmAllowed(String statName, HashMap<String, BaseStats> statChoice, String packageName) {
         BaseStats combined = statChoice.get(statName);
         if (combined == null) {
-            combined = new AlarmStats(statName,packageName);
+            combined = new AlarmStats(statName, packageName);
         }
         combined.setPackage(packageName);
         combined.incrementAllowedCount();
         statChoice.put(statName, combined);
     }
-    public void incrementServiceAllowed(Context context, String statName, int uId)
-    {
+
+    public void incrementServiceAllowed(Context context, String statName, int uId) {
         //Load from disk and populate our stats
-        loadStats(context, false); 
+        loadStats(context, false);
 
         incrementServiceAllowed(statName, mCurrentStats, uId);
         if (mGlobalParticipation) {
@@ -553,50 +525,44 @@ public class UnbounceStatsCollection implements Serializable {
         }
 
     }
+
     private void incrementServiceAllowed(String statName, HashMap<String, BaseStats> statChoice, int uId) {
         BaseStats combined = statChoice.get(statName);
-        if (combined == null)
-        {
+        if (combined == null) {
             combined = new ServiceStats(statName, uId);
-                   }
+        }
         combined.setUid(uId);
         combined.incrementAllowedCount();
         statChoice.put(statName, combined);
     }
 
-    public void resetStats(Context context, String statName)
-    {
-        loadStats(context, false); 
+    public void resetStats(Context context, String statName) {
+        loadStats(context, false);
         mCurrentStats.remove(statName);
     }
 
-    public void resetLocalStats(String statName)
-    {
+    public void resetLocalStats(String statName) {
         mCurrentStats.remove(statName);
     }
 
-    public void resetStats(Context context, int statType)
-    {
+    public void resetStats(Context context, int statType) {
         if (statType == STAT_CURRENT) {
             mCurrentStats.clear();
             mRunningSince = System.currentTimeMillis();
             clearStatFile(context, STATS_FILENAME_CURRENT);
-        }
-        else if (statType == STAT_PUSH) {
+        } else if (statType == STAT_PUSH) {
             mSincePushStats.clear();
             clearStatFile(context, STATS_FILENAME_PUSH);
         }
     }
 
-    public void resetLocalStats(int statType)
-    {
+    public void resetLocalStats(int statType) {
         if (statType == STAT_CURRENT) {
             if (mCurrentStats != null) {
                 mCurrentStats.clear();
             }
             mRunningSince = System.currentTimeMillis();
-        }
-        else if (statType == STAT_PUSH) {
+        } else if (statType == STAT_PUSH) {
             if (mSincePushStats != null) {
                 mSincePushStats.clear();
             }
@@ -614,12 +580,12 @@ public class UnbounceStatsCollection implements Serializable {
                 if (statChoice == mCurrentStats) {
                     wrap.mRunningSince = mRunningSince;
                 }
-                wrap.mStats = (HashMap)statChoice.clone();
+                wrap.mStats = (HashMap) statChoice.clone();
                 toWrite = wrap;
             }
 
             try {
-                File  outFile = new File(filename);
+                File outFile = new File(filename);
                 if (!outFile.exists()) {
                     return false;
                 }
@@ -696,12 +662,11 @@ public class UnbounceStatsCollection implements Serializable {
 
             File inFile = new File(filename);
             if (inFile.exists() && !inFile.canRead()) {
-            }
-            else if (inFile.exists() && inFile.canRead()) {
+            } else if (inFile.exists() && inFile.canRead()) {
                 FileInputStream in = new FileInputStream(inFile);
                 ObjectInputStream objIn = new ObjectInputStream(in);
                 if (statFilename.equals(STATS_FILENAME_GLOBAL)) {
-                    statChoice = (HashMap)objIn.readObject();
+                    statChoice = (HashMap) objIn.readObject();
                 } else {
                     BaseStatsWrapper wrap = (BaseStatsWrapper) objIn.readObject();
                     //Validate all stats are of the correct basetype
@@ -721,8 +686,7 @@ public class UnbounceStatsCollection implements Serializable {
                 }
                 objIn.close();
                 in.close();
-            }
-            else {
+            } else {
                 statChoice = new HashMap<String, BaseStats>();
             }
 

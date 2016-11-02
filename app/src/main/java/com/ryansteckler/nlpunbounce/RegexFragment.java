@@ -59,7 +59,7 @@ public abstract class RegexFragment extends android.app.ListFragment implements 
         super.onViewCreated(view, savedInstanceState);
 
         if (mListener != null)
-            mListener.onRegexSetTitle(getType().substring(0,1).toUpperCase() + getType().substring(1) + " " + getResources().getString(R.string.title_regex));
+            mListener.onRegexSetTitle(getType().substring(0, 1).toUpperCase() + getType().substring(1) + " " + getResources().getString(R.string.title_regex));
     }
 
     @Override
@@ -177,7 +177,7 @@ public abstract class RegexFragment extends android.app.ListFragment implements 
         //Remember the scroll pos so we can reinstate it
         if (!hidden) {
             if (mListener != null) {
-                mListener.onRegexSetTitle(getType().substring(0,1).toUpperCase() + getType().substring(1) + " " + getResources().getString(R.string.title_regex));
+                mListener.onRegexSetTitle(getType().substring(0, 1).toUpperCase() + getType().substring(1) + " " + getResources().getString(R.string.title_regex));
                 if ("alarm".equals(getType())) {
                     mListener.onRegexSetTaskerTitle(getResources().getString(R.string.tasker_choose_alarm_regex));
                 } else {

@@ -19,13 +19,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Switch;
 import android.widget.TextView;
 
-import com.ryansteckler.nlpunbounce.helpers.UidNameResolver;
 import com.ryansteckler.nlpunbounce.models.UnbounceStatsCollection;
 import com.ryansteckler.nlpunbounce.models.WakelockStats;
 
@@ -42,6 +40,10 @@ import java.net.URLEncoder;
  * create an instance of this fragment.
  */
 public class WakelockDetailFragment extends BaseDetailFragment {
+
+    public WakelockDetailFragment() {
+        // Required empty public constructor
+    }
 
     public long getSeconds() {
         EditText editSeconds = (EditText) getActivity().findViewById(R.id.editWakelockSeconds);
@@ -214,10 +216,6 @@ public class WakelockDetailFragment extends BaseDetailFragment {
         textView.setText(String.valueOf(mStat.getBlockCount()));
         textView = (TextView) view.findViewById(R.id.textLocalAcquired);
         textView.setText(String.valueOf(mStat.getAllowedCount()));
-    }
-
-    public WakelockDetailFragment() {
-        // Required empty public constructor
     }
 
     @Override

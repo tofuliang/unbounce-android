@@ -1,22 +1,19 @@
 package com.ryansteckler.nlpunbounce.helpers;
 
-import android.os.Bundle;
 import android.os.Handler;
-import android.os.Message;
-
-import java.io.IOException;
 
 /**
  * Created by rsteckler on 10/1/14.
  */
-public class NetworkHelper{
+public class NetworkHelper {
 
-    private NetworkHelper(){}
+    private NetworkHelper() {
+    }
+
     public static void getFromServer(final String url, final Handler handler) {
         //Post the content to the URL
 
-        new Thread()
-        {
+        new Thread() {
             @Override
             public void run() {
 
@@ -51,8 +48,7 @@ public class NetworkHelper{
     public static void sendToServer(final String contentId, final String content, final String url, final Handler handler) {
         //Post the content to the URL
 
-        new Thread()
-        {
+        new Thread() {
             @Override
             public void run() {
 

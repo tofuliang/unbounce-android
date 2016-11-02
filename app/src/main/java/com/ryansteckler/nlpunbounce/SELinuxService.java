@@ -13,6 +13,7 @@ public class SELinuxService extends IntentService {
     public SELinuxService() {
         super("SeLinuxService");
     }
+
     /**
      * Creates an IntentService.  Invoked by your subclass's constructor.
      *

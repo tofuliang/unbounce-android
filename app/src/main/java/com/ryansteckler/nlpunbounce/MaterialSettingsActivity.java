@@ -32,29 +32,53 @@ public class MaterialSettingsActivity extends Activity
         HomeFragment.OnFragmentInteractionListener,
         AlarmsFragment.OnFragmentInteractionListener,
         RegexFragment.OnFragmentInteractionListener,
-        ServicesFragment.OnFragmentInteractionListener
-    {
+        ServicesFragment.OnFragmentInteractionListener {
 
-    /**
-     * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
-     */
-    private NavigationDrawerFragment mNavigationDrawerFragment;
-
+    private static final String TAG = "Amplify: ";
     IabHelper mHelper;
 
     int mCurTheme = ThemeHelper.THEME_DEFAULT;
     int mCurForceEnglish = -1;
-
+    /**
+     * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
+     */
+    private NavigationDrawerFragment mNavigationDrawerFragment;
     private boolean mIsPremium = true;
+    IabHelper.OnIabPurchaseFinishedListener mPurchaseFinishedListener = new IabHelper.OnIabPurchaseFinishedListener() {
+        IabHelper.OnConsumeFinishedListener mConsumeFinishedListener = new IabHelper.OnConsumeFinishedListener() {
+            public void onConsumeFinished(Purchase purchase, IabResult result) {
+                //Do nothing
+            }
+        };
 
+        public void onIabPurchaseFinished(IabResult result, Purchase purchase) {
+            if (result.getResponse() == IabHelper.BILLING_RESPONSE_RESULT_USER_CANCELED ||
+                    result.getResponse() == IabHelper.BILLING_RESPONSE_RESULT_BILLING_UNAVAILABLE ||
+                    result.getResponse() == IabHelper.BILLING_RESPONSE_RESULT_DEVELOPER_ERROR ||
+                    result.getResponse() == IabHelper.BILLING_RESPONSE_RESULT_ERROR ||
+                    result.getResponse() == IabHelper.BILLING_RESPONSE_RESULT_ITEM_NOT_OWNED ||
+                    result.getResponse() == IabHelper.BILLING_RESPONSE_RESULT_ITEM_UNAVAILABLE) {
+                Toast.makeText(MaterialSettingsActivity.this, "Thank you for the thought, but the donation failed.  -Ryan", Toast.LENGTH_LONG).show();
+            } else if (result.getResponse() == IabHelper.BILLING_RESPONSE_RESULT_ITEM_ALREADY_OWNED) {
+                Toast.makeText(MaterialSettingsActivity.this, "Thank you for the thought, but you've already donated!  -Ryan", Toast.LENGTH_LONG).show();
+            } else if (result.isSuccess()) {
+                Toast.makeText(MaterialSettingsActivity.this, "Thank you SO much for donating!  -Ryan", Toast.LENGTH_LONG).show();
+                mIsPremium = true;
+                updateDonationUi();
+                if (purchase.getSku().contains("consumable")) {
+                    mHelper.consumeAsync(purchase, mConsumeFinishedListener);
+                }
+            } else {
+                Toast.makeText(MaterialSettingsActivity.this, "Thank you for the thought, but the donation failed.  -Ryan", Toast.LENGTH_LONG).show();
+            }
+
+        }
+    };
     /**
      * Used to store the last screen title. For use in {@link #restoreActionBar()}.
      */
     private CharSequence mTitle;
-
     private int mLastActionbarColor = 0;
-
-    private static final String TAG = "Amplify: ";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,8 +110,7 @@ public class MaterialSettingsActivity extends Activity
                     // update UI accordingly
                     updateDonationUi();
                     Log.d(TAG, "IAP result failed with code: " + result.getMessage());
-                }
-                else {
+                } else {
                     // does the user have the premium upgrade?
                     Log.d(TAG, "IAP result succeeded");
                     if (inventory != null) {
@@ -115,8 +138,7 @@ public class MaterialSettingsActivity extends Activity
         String base64billing = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAxwicOx54j03qBil36upqYab0uBWnf+WjoSRNOaTD9mkqj9bLM465gZlDXhutMZ+n5RlHUqmxl7jwH9KyYGTbwFqCxbLMCwR4oDhXVhX4fS6iggoHY7Ek6EzMT79x2XwCDg1pdQmX9d9TYRp32Sw2E+yg2uZKSPW29ikfdcmfkHcdCWrjFSuMJpC14R3d9McWQ7sg42eQq2spIuSWtP8ARGtj1M8eLVxgkQpXWrk9ijPgVcAbNZYWT9ndIZoKPg7VJVvzzAUNK/YOb+BzRurqJ42vCZy1+K+E4EUtmg/fxawHfXLZ3F/gNwictZO9fv1PYHPMa0sezSNVFAcm0yP1BwIDAQAB";
         mHelper = new IabHelper(MaterialSettingsActivity.this, base64billing);
         mHelper.startSetup(new IabHelper.OnIabSetupFinishedListener() {
-            public void onIabSetupFinished(IabResult result)
-            {
+            public void onIabSetupFinished(IabResult result) {
                 if (!result.isSuccess()) {
                     Log.d(TAG, "In-app Billing setup failed: " + result);
                     AlertDialog errorDialog = new AlertDialog.Builder(MaterialSettingsActivity.this)
@@ -129,10 +151,9 @@ public class MaterialSettingsActivity extends Activity
                             .setIcon(android.R.drawable.ic_dialog_alert)
                             .show();
 
-                    ((TextView)errorDialog.findViewById(android.R.id.message)).setMovementMethod(LinkMovementMethod.getInstance());
+                    ((TextView) errorDialog.findViewById(android.R.id.message)).setMovementMethod(LinkMovementMethod.getInstance());
 
-                }
-                else {
+                } else {
                     mHelper.queryInventoryAsync(false, mGotInventoryListener);
                 }
 
@@ -168,51 +189,12 @@ public class MaterialSettingsActivity extends Activity
         return mIsPremium;
     }
 
-
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data)
-    {
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (!mHelper.handleActivityResult(requestCode, resultCode, data)) {
             super.onActivityResult(requestCode, resultCode, data);
         }
     }
-
-    IabHelper.OnIabPurchaseFinishedListener mPurchaseFinishedListener = new IabHelper.OnIabPurchaseFinishedListener() {
-        public void onIabPurchaseFinished(IabResult result, Purchase purchase)
-        {
-            if (result.getResponse() == IabHelper.BILLING_RESPONSE_RESULT_USER_CANCELED ||
-                    result.getResponse() == IabHelper.BILLING_RESPONSE_RESULT_BILLING_UNAVAILABLE ||
-                    result.getResponse() == IabHelper.BILLING_RESPONSE_RESULT_DEVELOPER_ERROR ||
-                    result.getResponse() == IabHelper.BILLING_RESPONSE_RESULT_ERROR ||
-                    result.getResponse() == IabHelper.BILLING_RESPONSE_RESULT_ITEM_NOT_OWNED ||
-                    result.getResponse() == IabHelper.BILLING_RESPONSE_RESULT_ITEM_UNAVAILABLE)
-            {
-                Toast.makeText(MaterialSettingsActivity.this, "Thank you for the thought, but the donation failed.  -Ryan", Toast.LENGTH_LONG).show();
-            }
-            else if (result.getResponse() == IabHelper.BILLING_RESPONSE_RESULT_ITEM_ALREADY_OWNED) {
-                Toast.makeText(MaterialSettingsActivity.this, "Thank you for the thought, but you've already donated!  -Ryan", Toast.LENGTH_LONG).show();
-            }
-            else if (result.isSuccess()) {
-                Toast.makeText(MaterialSettingsActivity.this, "Thank you SO much for donating!  -Ryan", Toast.LENGTH_LONG).show();
-                mIsPremium = true;
-                updateDonationUi();
-                if (purchase.getSku().contains("consumable")) {
-                    mHelper.consumeAsync(purchase, mConsumeFinishedListener);
-                }
-            }
-            else
-            {
-                Toast.makeText(MaterialSettingsActivity.this, "Thank you for the thought, but the donation failed.  -Ryan", Toast.LENGTH_LONG).show();
-            }
-
-        }
-
-        IabHelper.OnConsumeFinishedListener mConsumeFinishedListener = new IabHelper.OnConsumeFinishedListener() {
-            public void onConsumeFinished(Purchase purchase, IabResult result) {
-                //Do nothing
-            }
-        };
-    };
 
     @Override
     public void onNavigationDrawerItemSelected(int position) {
@@ -261,7 +243,6 @@ public class MaterialSettingsActivity extends Activity
         actionBar.setDisplayShowTitleEnabled(true);
         actionBar.setTitle(mTitle);
     }
-
 
 
     @Override
@@ -328,19 +309,19 @@ public class MaterialSettingsActivity extends Activity
     }
 
 
-        @Override
-        public void onServicesSetTitle(String title) {
-            mTitle = title;
-            restoreActionBar();
-            animateActionbarBackground(getResources().getColor(R.color.background_three), 400);
+    @Override
+    public void onServicesSetTitle(String title) {
+        mTitle = title;
+        restoreActionBar();
+        animateActionbarBackground(getResources().getColor(R.color.background_three), 400);
 
-        }
+    }
 
-        @Override
-        public void onSetTaskerTitle(String title) {
-            //Do nothing because we're not in Tasker mode.
+    @Override
+    public void onSetTaskerTitle(String title) {
+        //Do nothing because we're not in Tasker mode.
 
-        }
+    }
 
     @Override
     public void onRegexSetTitle(String title) {

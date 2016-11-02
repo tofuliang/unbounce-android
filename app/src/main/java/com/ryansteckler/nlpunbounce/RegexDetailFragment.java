@@ -1,10 +1,8 @@
 package com.ryansteckler.nlpunbounce;
 
-import android.app.Fragment;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -41,11 +39,6 @@ public class RegexDetailFragment extends BaseDetailFragment {
     private String mDefaultSetName = "wakelock";
     private String mEnabled = "enabled";
 
-    @Override
-    public RegexDetailFragment newInstance() {
-        return new RegexDetailFragment();
-    }
-
     public RegexDetailFragment() {
         // Required empty public constructor
     }
@@ -68,6 +61,11 @@ public class RegexDetailFragment extends BaseDetailFragment {
         f.setArguments(args);
 
         return f;
+    }
+
+    @Override
+    public RegexDetailFragment newInstance() {
+        return new RegexDetailFragment();
     }
 
     @Override
@@ -111,7 +109,7 @@ public class RegexDetailFragment extends BaseDetailFragment {
 
         //Enable or disable the seconds setting.
         getView().findViewById(R.id.editRegexSeconds).setEnabled(b);
-        View panel = (View)getView().findViewById(R.id.settingsPanelSeconds);
+        View panel = (View) getView().findViewById(R.id.settingsPanelSeconds);
         TypedValue backgroundValue = new TypedValue();
         Resources.Theme theme = getActivity().getTheme();
         int resId = b ? R.attr.background_panel_enabled : R.attr.background_panel_disabled;
@@ -126,12 +124,11 @@ public class RegexDetailFragment extends BaseDetailFragment {
         TextView textView = (TextView) getView().findViewById(R.id.editRegex);
         textView.setEnabled(!mTaskerMode && b);
         textView.clearFocus();
-        panel = (View)getView().findViewById(R.id.settingsPanelRegex);
+        panel = (View) getView().findViewById(R.id.settingsPanelRegex);
         panel.setBackgroundDrawable(backgroundColor);
         panel.setAlpha(b ? 1 : (float) .4);
 
-        if (mClearListener != null)
-        {
+        if (mClearListener != null) {
             mClearListener.onCleared();
         }
     }
@@ -180,7 +177,7 @@ public class RegexDetailFragment extends BaseDetailFragment {
         String descriptionText = getResources().getString(R.string.desc_regex_unknown);
         if (matchingEvents.size() > 0)
             descriptionText = String.format(getResources().getString(R.string.desc_regex), matchingEvents.size(), events.size())
-                + "\n\n" + TextUtils.join("\n", matchingEvents);
+                    + "\n\n" + TextUtils.join("\n", matchingEvents);
         return descriptionText;
     }
 
@@ -241,7 +238,7 @@ public class RegexDetailFragment extends BaseDetailFragment {
 
         getView().findViewById(R.id.editRegexSeconds).setEnabled(onOff.isChecked());
 
-        View panel = (View)getView().findViewById(R.id.settingsPanelSeconds);
+        View panel = (View) getView().findViewById(R.id.settingsPanelSeconds);
         TypedValue backgroundValue = new TypedValue();
         Resources.Theme theme = getActivity().getTheme();
         int resId = enabled ? R.attr.background_panel_enabled : R.attr.background_panel_disabled;
@@ -254,7 +251,7 @@ public class RegexDetailFragment extends BaseDetailFragment {
         panel.setAlpha(enabled ? 1 : (float) .4);
 
         getView().findViewById(R.id.editRegex).setEnabled(!mTaskerMode && onOff.isChecked());
-        panel = (View)getView().findViewById(R.id.settingsPanelRegex);
+        panel = (View) getView().findViewById(R.id.settingsPanelRegex);
         panel.setBackgroundDrawable(backgroundColor);
         panel.setAlpha(enabled ? 1 : (float) .4);
 
@@ -287,8 +284,7 @@ public class RegexDetailFragment extends BaseDetailFragment {
             if (blockName.equals(prevBlockName))
                 return true;
 
-            if (mClearListener != null)
-            {
+            if (mClearListener != null) {
                 mClearListener.onCleared();
             }
 
@@ -299,7 +295,7 @@ public class RegexDetailFragment extends BaseDetailFragment {
                 if (!TextUtils.isEmpty(mDefaultValue)) {
                     if (regexChanged) {
                         // check if this regex already exists
-                        for (Iterator<String> i = set.iterator(); i.hasNext();) {
+                        for (Iterator<String> i = set.iterator(); i.hasNext(); ) {
                             String str = i.next();
                             if (str.startsWith(mDefaultValue + "$$||$$")) {
                                 textView.setError("Duplicate regex");
@@ -318,13 +314,12 @@ public class RegexDetailFragment extends BaseDetailFragment {
             }
             textView.clearFocus();
             // hide virtual keyboard
-            InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+            InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(edit.getWindowToken(), 0);
 
             return true;
 
-        } catch (NumberFormatException nfe)
-        {
+        } catch (NumberFormatException nfe) {
             //Not a number.  Android let us down.
         }
         return false;

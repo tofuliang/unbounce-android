@@ -14,6 +14,8 @@ import static com.ryansteckler.nlpunbounce.helpers.LocaleHelper.getFormattedTime
  */
 public class WakelockStats extends BaseStats implements Serializable {
 
+    private long mAllowedDuration;
+
     private WakelockStats() {
         setType("wakelock");
     }
@@ -25,8 +27,6 @@ public class WakelockStats extends BaseStats implements Serializable {
         setUid(uId);
 
     }
-
-    private long mAllowedDuration;
 
     public long getAllowedDuration() {
         return mAllowedDuration;

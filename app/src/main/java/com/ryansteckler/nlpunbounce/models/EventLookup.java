@@ -13,16 +13,17 @@ public class EventLookup {
     public static final int UNKNOWN = 1;
     public static final int SAFE = 2;
 
-    private EventLookup(){}
+    private EventLookup() {
+    }
 
     public static String getDescription(Context context, String eventName) {
         String lowerTrimmed = eventName.toLowerCase();
-        lowerTrimmed= lowerTrimmed.replace("[", "");
-        lowerTrimmed =lowerTrimmed.replace("]", "");
-        lowerTrimmed =lowerTrimmed.replace(":", "");
-        lowerTrimmed =lowerTrimmed.replace("-", "");
-        lowerTrimmed =lowerTrimmed.replace(".", "");
-        lowerTrimmed =lowerTrimmed.replace("*", "");
+        lowerTrimmed = lowerTrimmed.replace("[", "");
+        lowerTrimmed = lowerTrimmed.replace("]", "");
+        lowerTrimmed = lowerTrimmed.replace(":", "");
+        lowerTrimmed = lowerTrimmed.replace("-", "");
+        lowerTrimmed = lowerTrimmed.replace(".", "");
+        lowerTrimmed = lowerTrimmed.replace("*", "");
 
         //Unknown
         String toReturn = context.getResources().getString(R.string.desc_unknown);
@@ -77,8 +78,7 @@ public class EventLookup {
                 eventName.equalsIgnoreCase("m") ||
                 eventName.equalsIgnoreCase("AudioMix") ||
                 eventName.equalsIgnoreCase("com.oasisfeng.greenify.CLEAN_NOW") ||
-                eventName.equalsIgnoreCase("rilj"))
-        {
+                eventName.equalsIgnoreCase("rilj")) {
             toReturn = UNSAFE;
         }
         //Alarms - safe

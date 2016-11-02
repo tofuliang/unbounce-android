@@ -21,12 +21,10 @@ import com.ryansteckler.nlpunbounce.helpers.ThemeHelper;
 public class SettingsActivity extends Activity {
 
     private static final String TAG = "Anmplify: ";
-
-    int mCurTheme = ThemeHelper.THEME_DEFAULT;
-    int mCurForceEnglish = -1;
-
     static int mClicksOnDebug = 0;
     static Preference mExtendedDebugCategory = null;
+    int mCurTheme = ThemeHelper.THEME_DEFAULT;
+    int mCurForceEnglish = -1;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -108,8 +106,7 @@ public class SettingsActivity extends Activity {
                             edit.apply();
                             getPreferenceScreen().addPreference(mExtendedDebugCategory);
                         }
-                    }
-                    else {
+                    } else {
                         Toast.makeText(getActivity(), "You've already enabled extended debug options.", Toast.LENGTH_SHORT).show();
                     }
                     return true;
@@ -125,17 +122,15 @@ public class SettingsActivity extends Activity {
 
         }
 
-        private void enableDependent(String control, boolean enable)
-        {
-            Preference controlToAffect = (Preference)findPreference(control);
+        private void enableDependent(String control, boolean enable) {
+            Preference controlToAffect = (Preference) findPreference(control);
             controlToAffect.setEnabled(enable);
         }
 
         @Override
         public void onSharedPreferenceChanged(final SharedPreferences sharedPreferences, String key) {
 
-            if (key.equals("logging_level"))
-            {
+            if (key.equals("logging_level")) {
                 ListPreference pref = (ListPreference) findPreference(key);
                 String entry = sharedPreferences.getString(key, "default");
                 if (entry.equals("quiet")) {
@@ -145,8 +140,7 @@ public class SettingsActivity extends Activity {
                 } else {
                     pref.setSummary("Default");
                 }
-            }
-            else if (key.equals("show_launcher_icon")) {
+            } else if (key.equals("show_launcher_icon")) {
                 CheckBoxPreference pref = (CheckBoxPreference) findPreference(key);
                 boolean value = sharedPreferences.getBoolean(key, false);
                 pref.setChecked(value);
@@ -155,8 +149,7 @@ public class SettingsActivity extends Activity {
                 int state = value ? PackageManager.COMPONENT_ENABLED_STATE_ENABLED : PackageManager.COMPONENT_ENABLED_STATE_DISABLED;
                 ComponentName aliasName = new ComponentName(getActivity(), "com.ryansteckler.nlpunbounce.Settings-Alias");
                 packageManager.setComponentEnabledSetting(aliasName, state, PackageManager.DONT_KILL_APP);
-            }
-            else if (key.equals("theme")) {
+            } else if (key.equals("theme")) {
                 ListPreference pref = (ListPreference) findPreference(key);
                 if (sharedPreferences.getString(key, "default").equals("dark")) {
                     ThemeHelper.changeToTheme(this.getActivity(), ThemeHelper.THEME_DARK);
@@ -173,7 +166,7 @@ public class SettingsActivity extends Activity {
                 } else {
                     LocaleHelper.revertToSystem(getActivity());
                 }
-            }else if (key.equals("enable_service_block")) {
+            } else if (key.equals("enable_service_block")) {
                 CheckBoxPreference pref = (CheckBoxPreference) findPreference(key);
                 boolean value = sharedPreferences.getBoolean(key, false);
                 pref.setChecked(value);

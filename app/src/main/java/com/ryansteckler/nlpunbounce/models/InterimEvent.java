@@ -4,6 +4,11 @@ package com.ryansteckler.nlpunbounce.models;
  * Created by rsteckler on 9/5/14.
  */
 public class InterimEvent implements java.io.Serializable {
+    private long mTimeStarted;
+    private long mTimeStopped;
+    private String mName;
+    private int mUId;
+
     public long getTimeStarted() {
         return mTimeStarted;
     }
@@ -35,11 +40,6 @@ public class InterimEvent implements java.io.Serializable {
     public void setUId(int mUId) {
         this.mUId = mUId;
     }
-
-    private long mTimeStarted;
-    private long mTimeStopped;
-    private String mName;
-    private int mUId;
 
 
 }

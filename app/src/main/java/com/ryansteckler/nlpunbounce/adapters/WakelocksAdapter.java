@@ -3,25 +3,20 @@ package com.ryansteckler.nlpunbounce.adapters;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
-import android.graphics.Typeface;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.ryansteckler.nlpunbounce.R;
 import com.ryansteckler.nlpunbounce.helpers.SortWakeLocks;
-import com.ryansteckler.nlpunbounce.helpers.ThemeHelper;
 import com.ryansteckler.nlpunbounce.models.BaseStats;
-import com.ryansteckler.nlpunbounce.models.EventLookup;
 import com.ryansteckler.nlpunbounce.models.WakelockStats;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 
 /**
  * Created by rsteckler on 9/7/14.
@@ -36,20 +31,13 @@ public class WakelocksAdapter extends BaseAdapter {
         mTruncateEnd = !prefs.getBoolean("scroll_item_names", true);
     }
 
-
-    private static class WakelockViewHolder {
-        TextView name;
-        TextView wakeTime;
-        TextView wakeCount;
-    }
-
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         int itemType = this.getItemViewType(position);
         switch (itemType) {
             case ITEM_TYPE:
                 // Get the data item for this position
-                WakelockStats wakelock = (WakelockStats)getItem(position);
+                WakelockStats wakelock = (WakelockStats) getItem(position);
 
                 // Check if an existing view is being reused, otherwise inflate the view
                 WakelockViewHolder viewHolder; // view lookup cache stored in tag
@@ -66,8 +54,7 @@ public class WakelocksAdapter extends BaseAdapter {
                     viewHolder.wakeCount = (TextView) convertView.findViewById(R.id.textViewWakelockCount);
 
                     convertView.setTag(viewHolder);
-                }
-                else {
+                } else {
                     viewHolder = (WakelockViewHolder) convertView.getTag();
                 }
 
@@ -84,8 +71,7 @@ public class WakelocksAdapter extends BaseAdapter {
                 int width = viewHolder.wakeCount.getMeasuredWidth();
                 if (height > width) {
                     viewHolder.wakeCount.setLayoutParams(new LinearLayout.LayoutParams(height, height));
-                }
-                else {
+                } else {
                     viewHolder.wakeCount.setLayoutParams(new LinearLayout.LayoutParams(width, width));
                 }
                 float[] hsv = getBackColorFromSpectrum(wakelock);
@@ -113,6 +99,12 @@ public class WakelocksAdapter extends BaseAdapter {
 
     public void sort(int sortBy) {
         sort(sortBy, true);
+    }
+
+    private static class WakelockViewHolder {
+        TextView name;
+        TextView wakeTime;
+        TextView wakeCount;
     }
 
 }

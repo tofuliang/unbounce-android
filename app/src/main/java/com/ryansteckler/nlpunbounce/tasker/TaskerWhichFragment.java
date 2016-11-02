@@ -9,17 +9,20 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.ryansteckler.nlpunbounce.AlarmRegexFragment;
 import com.ryansteckler.nlpunbounce.AlarmsFragment;
 import com.ryansteckler.nlpunbounce.R;
-import com.ryansteckler.nlpunbounce.WakelocksFragment;
 import com.ryansteckler.nlpunbounce.WakelockRegexFragment;
-import com.ryansteckler.nlpunbounce.AlarmRegexFragment;
+import com.ryansteckler.nlpunbounce.WakelocksFragment;
 
 /**
  * Created by rsteckler on 9/28/14.
  */
 public class TaskerWhichFragment extends Fragment {
     private OnFragmentInteractionListener mListener;
+
+    public TaskerWhichFragment() {
+    }
 
     /**
      * Returns a new instance of this fragment for the given section
@@ -28,9 +31,6 @@ public class TaskerWhichFragment extends Fragment {
     public static TaskerWhichFragment newInstance() {
         TaskerWhichFragment fragment = new TaskerWhichFragment();
         return fragment;
-    }
-
-    public TaskerWhichFragment() {
     }
 
     @Override
@@ -45,11 +45,11 @@ public class TaskerWhichFragment extends Fragment {
 
                 FragmentManager fragmentManager = getFragmentManager();
                 fragmentManager.beginTransaction()
-                    .setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out, android.R.animator.fade_in, android.R.animator.fade_out)
-                    .hide(TaskerWhichFragment.this)
-                    .add(R.id.container, newFragment)
-                    .addToBackStack(null)
-                    .commit();
+                        .setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out, android.R.animator.fade_in, android.R.animator.fade_out)
+                        .hide(TaskerWhichFragment.this)
+                        .add(R.id.container, newFragment)
+                        .addToBackStack(null)
+                        .commit();
 
                 if (mListener != null)
                     mListener.onTaskerWhichSetTitle(getResources().getString(R.string.tasker_choose_wakelock));
@@ -62,11 +62,11 @@ public class TaskerWhichFragment extends Fragment {
             public void onClick(View view) {
                 FragmentManager fragmentManager = getFragmentManager();
                 fragmentManager.beginTransaction()
-                    .setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out, android.R.animator.fade_in, android.R.animator.fade_out)
-                    .hide(TaskerWhichFragment.this)
-                    .add(R.id.container, AlarmsFragment.newInstance(true))
-                    .addToBackStack(null)
-                    .commit();
+                        .setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out, android.R.animator.fade_in, android.R.animator.fade_out)
+                        .hide(TaskerWhichFragment.this)
+                        .add(R.id.container, AlarmsFragment.newInstance(true))
+                        .addToBackStack(null)
+                        .commit();
 
                 if (mListener != null)
                     mListener.onTaskerWhichSetTitle(getResources().getString(R.string.tasker_choose_alarm));
@@ -147,8 +147,7 @@ public class TaskerWhichFragment extends Fragment {
     @Override
     public void onHiddenChanged(boolean hidden) {
         super.onHiddenChanged(hidden);
-        if (!hidden)
-        {
+        if (!hidden) {
             //Set the title again.
             if (mListener != null) {
                 mListener.onTaskerWhichSetTitle(getResources().getString(R.string.tasker_welcome));
@@ -168,6 +167,7 @@ public class TaskerWhichFragment extends Fragment {
      */
     public interface OnFragmentInteractionListener {
         public void onTaskerResetSelected();
+
         public void onTaskerWhichSetTitle(String title);
     }
 

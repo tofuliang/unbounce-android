@@ -19,8 +19,6 @@ public abstract class BaseStats implements Serializable {
     private int uid = -99;
 
 
-
-
     private String mDerivedPackageName;
 
     public String getPackage() {
@@ -103,11 +101,12 @@ public abstract class BaseStats implements Serializable {
 
     public abstract String getDerivedPackageName(Context ctx);
 
-    protected void setDerivedPackageName(String mDerivedPackageName) {
-        this.mDerivedPackageName = mDerivedPackageName;
-    }
     protected String getDerivedPackageName() {
         return mDerivedPackageName;
+    }
+
+    protected void setDerivedPackageName(String mDerivedPackageName) {
+        this.mDerivedPackageName = mDerivedPackageName;
     }
 
 }

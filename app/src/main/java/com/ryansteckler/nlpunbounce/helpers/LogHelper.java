@@ -19,7 +19,7 @@ public class LogHelper {
     public static void defaultLog(Context c, String log) {
         String logLevel = getLogLevel(c);
         if (logLevel.equals("default") || logLevel.equals("verbose")) {
-            Log.d(TAG,log);
+            Log.d(TAG, log);
         }
     }
 

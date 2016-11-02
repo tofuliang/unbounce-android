@@ -24,7 +24,9 @@ public class WakelockRegexFragment extends RegexFragment {
         super();
     }
 
-    public static WakelockRegexFragment newInstance() { return newInstance(false); }
+    public static WakelockRegexFragment newInstance() {
+        return newInstance(false);
+    }
 
     public static WakelockRegexFragment newInstance(boolean taskerMode) {
         WakelockRegexFragment fragment = new WakelockRegexFragment();
@@ -40,7 +42,9 @@ public class WakelockRegexFragment extends RegexFragment {
     }
 
     @Override
-    protected boolean getTaskerMode() { return mTaskerMode; }
+    protected boolean getTaskerMode() {
+        return mTaskerMode;
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

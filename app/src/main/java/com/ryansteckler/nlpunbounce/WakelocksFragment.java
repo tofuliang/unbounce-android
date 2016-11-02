@@ -1,11 +1,8 @@
 package com.ryansteckler.nlpunbounce;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.Dialog;
 import android.app.FragmentManager;
 import android.app.ListFragment;
-import android.content.DialogInterface;
 import android.content.res.Resources;
 import android.graphics.Point;
 import android.graphics.Rect;
@@ -18,7 +15,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.SearchView;
 

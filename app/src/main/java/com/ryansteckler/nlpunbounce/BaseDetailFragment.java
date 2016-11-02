@@ -6,8 +6,6 @@ import android.app.Fragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
-import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
@@ -47,6 +45,10 @@ public abstract class BaseDetailFragment extends Fragment {
 
     protected FragmentInteractionListener mListener;
 
+    public BaseDetailFragment() {
+        // Required empty public constructor
+    }
+
     protected abstract void loadStatsFromSource(View view);
 
     protected abstract void warnUnknown(Switch onOff);
@@ -54,7 +56,6 @@ public abstract class BaseDetailFragment extends Fragment {
     protected abstract void updateEnabled(boolean b);
 
     protected abstract BaseDetailFragment newInstance();
-
 
     public String getName() {
         return mStat.getName();
@@ -169,10 +170,6 @@ public abstract class BaseDetailFragment extends Fragment {
         return fragment;
     }
 
-    public BaseDetailFragment() {
-        // Required empty public constructor
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -223,6 +220,10 @@ public abstract class BaseDetailFragment extends Fragment {
         mListener = null;
     }
 
+    public void attachClearListener(FragmentClearListener fragment) {
+        mClearListener = fragment;
+    }
+
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
@@ -241,10 +242,6 @@ public abstract class BaseDetailFragment extends Fragment {
 
     public interface FragmentClearListener {
         public void onCleared();
-    }
-
-    public void attachClearListener(FragmentClearListener fragment) {
-        mClearListener = fragment;
     }
 
 

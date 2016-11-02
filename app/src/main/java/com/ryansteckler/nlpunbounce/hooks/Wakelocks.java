@@ -18,11 +18,6 @@ import com.ryansteckler.nlpunbounce.XposedReceiver;
 import com.ryansteckler.nlpunbounce.models.InterimEvent;
 import com.ryansteckler.nlpunbounce.models.UnbounceStatsCollection;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.DataOutputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
@@ -32,7 +27,6 @@ import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XSharedPreferences;
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
-import de.robv.android.xposed.callbacks.XC_LoadPackage;
 import de.robv.android.xposed.callbacks.XC_LoadPackage.LoadPackageParam;
 
 import static de.robv.android.xposed.XposedHelpers.callMethod;
@@ -40,22 +34,19 @@ import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
 
 public class Wakelocks implements IXposedHookLoadPackage {
 
-    private static final String TAG = "Amplify: ";
     public static final String VERSION = "3.3.6c"; //This needs to be pulled from the manifest or gradle build.
     public static final String FILE_VERSION = "3"; //This needs to be pulled from the manifest or gradle build.
+    private static final String TAG = "Amplify: ";
+    public static HashMap<IBinder, InterimEvent> mCurrentWakeLocks;
+    private final BroadcastReceiver mBroadcastReceiver = new XposedReceiver();
+    XSharedPreferences m_prefs;
     private HashMap<String, Long> mLastWakelockAttempts = null; //The last time each wakelock was allowed.
     private HashMap<String, Long> mLastAlarmAttempts = null; //The last time each alarm was allowed.
-
     private long mLastUpdateStats = 0;
     private long mUpdateStatsFrequency = 300000; //Save every five minutes
     private long mLastReloadPrefs = 0;
     private long mReloadPrefsFrequency = 60000; //Reload prefs every minute
-
-    private final BroadcastReceiver mBroadcastReceiver = new XposedReceiver();
     private boolean mRegisteredRecevier = false;
-
-    XSharedPreferences m_prefs;
-    public static HashMap<IBinder, InterimEvent> mCurrentWakeLocks;
 
     @Override
     public void handleLoadPackage(LoadPackageParam lpparam) throws Throwable {

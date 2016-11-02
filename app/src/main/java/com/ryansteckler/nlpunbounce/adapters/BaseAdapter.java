@@ -12,7 +12,6 @@ import android.widget.TextView;
 import com.ryansteckler.nlpunbounce.R;
 import com.ryansteckler.nlpunbounce.helpers.SortWakeLocks;
 import com.ryansteckler.nlpunbounce.helpers.ThemeHelper;
-import com.ryansteckler.nlpunbounce.models.AlarmStats;
 import com.ryansteckler.nlpunbounce.models.BaseStats;
 import com.ryansteckler.nlpunbounce.models.EventLookup;
 
@@ -24,36 +23,22 @@ import java.util.List;
  * Created by rsteckler on 10/21/14.
  */
 public abstract class BaseAdapter extends ArrayAdapter {
+    protected final static int ITEM_TYPE = 0;
+    protected final static int CATEGORY_TYPE = 1;
     protected long mLowCount = 0;
     protected long mHighCount = 0;
     protected long mScale = 0;
+    protected ArrayList<BaseStats> mBackingList = null;
+    protected ArrayList<BaseStats> originalList;
+    //Track whether we're sorting by count or duration.
+    protected int mSortBy = SortWakeLocks.SORT_COUNT;
     private String mPrefix;
-
     private long mCategoryBlockedIndex = 0;
     private long mCategorySafeIndex = 0;
     private long mCategoryUnknownIndex = 0;
     private long mCategoryUnsafeIndex = 0;
 
-    protected final static int ITEM_TYPE = 0;
-    protected final static int CATEGORY_TYPE = 1;
-
-    protected ArrayList<BaseStats> mBackingList = null;
-    protected ArrayList<BaseStats> originalList;
-
-    //Track whether we're sorting by count or duration.
-    protected int mSortBy = SortWakeLocks.SORT_COUNT;
-
     //protected Map<String, List<BaseStats>> mapPackageIndexMap = new HashMap<String, List<BaseStats>>();
-
-    @Override
-    public int getPosition(Object item) {
-        return mBackingList.indexOf(item);
-    }
-
-    @Override
-    public long getItemId(int position) {
-        return position;
-    }
 
     public BaseAdapter(Context context, int layoutId, ArrayList<BaseStats> baseStatList, String prefix) {
         super(context, layoutId, baseStatList);
@@ -63,6 +48,16 @@ public abstract class BaseAdapter extends ArrayAdapter {
         calculateScale(context, baseStatList);
         addCategories(mBackingList);
         //addPackgeBasedCategories(mBackingList);
+    }
+
+    @Override
+    public int getPosition(Object item) {
+        return mBackingList.indexOf(item);
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return position;
     }
 
     protected void addCategories(ArrayList<BaseStats> alarmStatList) {
@@ -157,10 +152,6 @@ public abstract class BaseAdapter extends ArrayAdapter {
             return ITEM_TYPE;
     }
 
-    private static class CategoryViewHolder {
-        TextView name;
-    }
-
     protected View getCategoryView(int position, View convertView, ViewGroup parent) {
         //Take care of the category special cases.
         CategoryViewHolder categoryViewHolder = null; // view lookup cache stored in tag
@@ -219,7 +210,7 @@ public abstract class BaseAdapter extends ArrayAdapter {
 
     protected abstract void sort(int sortBy, boolean categorize);
 
-        @Override
+    @Override
     public Filter getFilter() {
         return new Filter() {
             @SuppressWarnings("unchecked")
@@ -250,6 +241,10 @@ public abstract class BaseAdapter extends ArrayAdapter {
             }
         }
         return filteredList;
+    }
+
+    private static class CategoryViewHolder {
+        TextView name;
     }
 
 }

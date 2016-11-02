@@ -28,10 +28,10 @@ import android.graphics.drawable.Drawable;
  */
 public class UidNameResolver {
 
-    protected String[] m_packages;
-    protected String[] m_packageNames;
     private static Context m_context;
     private static UidNameResolver m_instance;
+    protected String[] m_packages;
+    protected String[] m_packageNames;
 
     private UidNameResolver(Context ctx) {
         m_context = ctx;

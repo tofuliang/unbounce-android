@@ -2,9 +2,7 @@ package com.ryansteckler.nlpunbounce;
 
 import android.os.Bundle;
 
-import com.ryansteckler.nlpunbounce.adapters.AlarmsAdapter;
 import com.ryansteckler.nlpunbounce.helpers.ThemeHelper;
-import com.ryansteckler.nlpunbounce.models.UnbounceStatsCollection;
 
 /**
  * Created by rsteckler on 11/21/15.
@@ -22,7 +20,9 @@ public class AlarmRegexFragment extends RegexFragment {
         super();
     }
 
-    public static AlarmRegexFragment newInstance() { return newInstance(false); }
+    public static AlarmRegexFragment newInstance() {
+        return newInstance(false);
+    }
 
     public static AlarmRegexFragment newInstance(boolean taskerMode) {
         AlarmRegexFragment fragment = new AlarmRegexFragment();
@@ -38,7 +38,9 @@ public class AlarmRegexFragment extends RegexFragment {
     }
 
     @Override
-    protected boolean getTaskerMode() { return mTaskerMode; }
+    protected boolean getTaskerMode() {
+        return mTaskerMode;
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

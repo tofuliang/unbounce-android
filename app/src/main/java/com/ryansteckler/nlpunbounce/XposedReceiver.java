@@ -8,13 +8,13 @@ import com.ryansteckler.nlpunbounce.models.UnbounceStatsCollection;
 
 public class XposedReceiver extends BroadcastReceiver {
 
-    public XposedReceiver() {
-    }
-
     public final static String RESET_ACTION = "com.ryansteckler.nlpunbounce.RESET_STATS";
     public final static String REFRESH_ACTION = "com.ryansteckler.nlpunbounce.REFRESH_STATS";
     public final static String STAT_NAME = "stat_name";
     public final static String STAT_TYPE = "stat_type";
+
+    public XposedReceiver() {
+    }
 
     @Override
     public void onReceive(Context context, Intent intent) {

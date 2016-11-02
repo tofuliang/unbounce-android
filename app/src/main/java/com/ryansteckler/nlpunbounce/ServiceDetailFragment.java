@@ -5,8 +5,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -16,7 +14,6 @@ import android.widget.ImageButton;
 import android.widget.Switch;
 import android.widget.TextView;
 
-import com.ryansteckler.nlpunbounce.helpers.UidNameResolver;
 import com.ryansteckler.nlpunbounce.models.UnbounceStatsCollection;
 
 import java.io.UnsupportedEncodingException;
@@ -26,6 +23,10 @@ import java.net.URLEncoder;
  * Created by rsteckler on 10/20/14.
  */
 public class ServiceDetailFragment extends BaseDetailFragment {
+
+    public ServiceDetailFragment() {
+        // Required empty public constructor
+    }
 
     @Override
     public void onViewCreated(final View view, Bundle savedInstanceState) {
@@ -92,7 +93,6 @@ public class ServiceDetailFragment extends BaseDetailFragment {
                 .show();
     }
 
-
     @Override
     protected void updateEnabled(boolean b) {
         String blockName = "service_" + mStat.getName() + "_enabled";
@@ -122,10 +122,6 @@ public class ServiceDetailFragment extends BaseDetailFragment {
     @Override
     public ServiceDetailFragment newInstance() {
         return new ServiceDetailFragment();
-    }
-
-    public ServiceDetailFragment() {
-        // Required empty public constructor
     }
 
     @Override

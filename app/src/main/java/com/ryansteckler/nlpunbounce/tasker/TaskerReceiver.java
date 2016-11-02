@@ -5,14 +5,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.text.TextUtils;
 
 import com.ryansteckler.nlpunbounce.XposedReceiver;
 import com.ryansteckler.nlpunbounce.models.UnbounceStatsCollection;
 
 import java.util.HashSet;
-import java.util.Set;
 import java.util.Iterator;
+import java.util.Set;
 
 public class TaskerReceiver extends BroadcastReceiver {
     public TaskerReceiver() {
@@ -46,7 +45,7 @@ public class TaskerReceiver extends BroadcastReceiver {
                     SharedPreferences prefs = context.getSharedPreferences("com.ryansteckler.nlpunbounce" + "_preferences", Context.MODE_WORLD_READABLE);
                     Set<String> sampleSet = new HashSet<String>();
                     Set<String> set = new HashSet<String>(prefs.getStringSet(type + "_regex_set", sampleSet));
-                    for (Iterator<String> i = set.iterator(); i.hasNext();) {
+                    for (Iterator<String> i = set.iterator(); i.hasNext(); ) {
                         String str = i.next();
                         if (str.startsWith(name + "$$||$$")) {
                             i.remove();
