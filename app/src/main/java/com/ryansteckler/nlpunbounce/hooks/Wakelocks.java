@@ -34,7 +34,7 @@ import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
 
 public class Wakelocks implements IXposedHookLoadPackage {
 
-    public static final String VERSION = "3.3.6c"; //This needs to be pulled from the manifest or gradle build.
+    public static final String VERSION = "3.3.8"; //This needs to be pulled from the manifest or gradle build.
     public static final String FILE_VERSION = "3"; //This needs to be pulled from the manifest or gradle build.
     private static final String TAG = "Amplify: ";
     public static HashMap<IBinder, InterimEvent> mCurrentWakeLocks;
@@ -43,7 +43,7 @@ public class Wakelocks implements IXposedHookLoadPackage {
     private HashMap<String, Long> mLastWakelockAttempts = null; //The last time each wakelock was allowed.
     private HashMap<String, Long> mLastAlarmAttempts = null; //The last time each alarm was allowed.
     private long mLastUpdateStats = 0;
-    private long mUpdateStatsFrequency = 300000; //Save every five minutes
+    private long mUpdateStatsFrequency = 600000; //Save every ten minutes
     private long mLastReloadPrefs = 0;
     private long mReloadPrefsFrequency = 60000; //Reload prefs every minute
     private boolean mRegisteredRecevier = false;
@@ -71,7 +71,6 @@ public class Wakelocks implements IXposedHookLoadPackage {
 
         }
     }
-
 
     private void resetFilesIfNeeded(Context context) {
         //Get the version number and compare it to our app version.
@@ -103,13 +102,6 @@ public class Wakelocks implements IXposedHookLoadPackage {
             }
         });
 
-//        findAndHookMethod("com.ryansteckler.nlpunbounce.HomeFragment", lpparam.classLoader, "requestRefresh", new XC_MethodHook() {
-//            @Override
-//            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-//                String lastVersion = m_prefs.getString("file_version", "0");
-//            }
-//        });
-
     }
 
     private void setupReceiver(XC_MethodHook.MethodHookParam param) {
@@ -129,9 +121,9 @@ public class Wakelocks implements IXposedHookLoadPackage {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             //Try for alarm hooks for API levels >= 19
-            defaultLog("Attempting 19to21 AlarmHook");
+            defaultLog("Attempting 19to23 AlarmHook");
             try19To21AlarmHook(lpparam);
-            defaultLog("Successful 19to21 AlarmHook");
+            defaultLog("Successful 19to23 AlarmHook");
             alarmsHooked = true;
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1 &&
                 Build.VERSION.SDK_INT <= Build.VERSION_CODES.JELLY_BEAN_MR2) {
@@ -151,10 +143,10 @@ public class Wakelocks implements IXposedHookLoadPackage {
     private void hookWakeLocks(LoadPackageParam lpparam) {
         boolean wakeLocksHooked = false;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            //Try for wakelock hooks for API levels 19-20
-            defaultLog("Attempting 21 WakeLockHook");
+            //Try for wakelock hooks for API levels 21-23
+            defaultLog("Attempting 21to23 WakeLockHook");
             try21WakeLockHook(lpparam);
-            defaultLog("Successful 21 WakeLockHook");
+            defaultLog("Successful 21to23 WakeLockHook");
             wakeLocksHooked = true;
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT &&
                 Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
@@ -480,13 +472,6 @@ public class Wakelocks implements IXposedHookLoadPackage {
 
     private void recordServiceStart(XC_MethodHook.MethodHookParam param, String serviceName, int uId) {
         //Get the service
-//        InterimEvent curStats = mCurrentServices.get(serviceName);
-//        if (curStats == null) {
-//            curStats = new InterimEvent();
-//            curStats.setName(serviceName);
-//            curStats.setTimeStarted(SystemClock.elapsedRealtime());
-//            mCurrentServices.put(serviceName, curStats);
-//        }
         Context context = null;
         if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.JELLY_BEAN_MR2) {
             try {
@@ -521,28 +506,6 @@ public class Wakelocks implements IXposedHookLoadPackage {
         UnbounceStatsCollection.getInstance().incrementAlarmAllowed(context, alarmName, packageName);
     }
 
-//    private void handleServiceStop(XC_MethodHook.MethodHookParam param, Intent serviceIntent) {
-//
-//        if (serviceIntent == null || serviceIntent.getComponent() == null) {
-//            defaultLog("Service (stop) intent or component is null");
-//            return;
-//        }
-//
-//        String serviceName = serviceIntent.getComponent().flattenToShortString();
-//        if (serviceName == null) {
-//            defaultLog("Service (stop) component name is null");
-//            return;
-//        }
-//        defaultLog("Service (stop) intent name: " + serviceName);
-//
-//        InterimEvent curStats = mCurrentServices.remove(serviceName);
-//        if (curStats != null) {
-//            curStats.setTimeStopped(SystemClock.elapsedRealtime());
-//            Object am = (Object)XposedHelpers.getObjectField(param.thisObject, "mAm");
-//            Context context = (Context) XposedHelpers.getObjectField(am, "mContext");
-//            UnbounceStatsCollection.getInstance().addInterimService(context, curStats);
-//        }
-//    }
 
     private void handleWakeLockRelease(XC_MethodHook.MethodHookParam param, IBinder lock) {
         InterimEvent curStats = mCurrentWakeLocks.remove(lock);
