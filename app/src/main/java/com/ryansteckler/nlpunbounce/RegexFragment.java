@@ -140,35 +140,34 @@ public abstract class RegexFragment extends android.app.ListFragment implements 
         //Start by getting the bounds of the current list item, as a starting point.
         ListView list = (ListView) getActivity().findViewById(android.R.id.list);
         View listItem = list.getChildAt(position - list.getFirstVisiblePosition());
-        if (listItem == null) {
-            LogHelper.defaultLog(getActivity(), "About to crash.  null item at position: " + position);
+        if (listItem != null) {
+            final Rect startBounds = new Rect();
+            listItem.getGlobalVisibleRect(startBounds);
+
+            //Now get the final bounds for the animation:  the same bounds as the parent list.
+            final Rect finalBounds = new Rect();
+            final Point globalOffset = new Point();
+            list.getGlobalVisibleRect(finalBounds, globalOffset);
+
+            //Offset both bounds because we aren't full-screen.
+            startBounds.offset(-globalOffset.x, -globalOffset.y);
+            finalBounds.offset(-globalOffset.x, -globalOffset.y);
+
+            //Spin up the new Detail fragment.  Dig the custom animations.  Also put it on the back stack
+            //so we can hit the back button and come back to the list.
+            FragmentManager fragmentManager = getFragmentManager();
+            String title = TextUtils.isEmpty(name) ? "New Regex" : name;
+            RegexDetailFragment newFrag = RegexDetailFragment.newInstance(startBounds.top, finalBounds.top, startBounds.bottom, finalBounds.bottom, new AlarmStats(title, "Regex"), getTaskerMode(),
+                    name, seconds, enabled, getType());
+            newFrag.attachClearListener(this);
+            fragmentManager.beginTransaction()
+                    .setCustomAnimations(R.animator.expand_in, R.animator.noop, R.animator.noop, R.animator.expand_out)
+                    .hide(this)
+                    .add(R.id.container, newFrag, "regex_detail_" + getType())
+                    .addToBackStack(null)
+                    .commit();
+
         }
-        final Rect startBounds = new Rect();
-        listItem.getGlobalVisibleRect(startBounds);
-
-        //Now get the final bounds for the animation:  the same bounds as the parent list.
-        final Rect finalBounds = new Rect();
-        final Point globalOffset = new Point();
-        list.getGlobalVisibleRect(finalBounds, globalOffset);
-
-        //Offset both bounds because we aren't full-screen.
-        startBounds.offset(-globalOffset.x, -globalOffset.y);
-        finalBounds.offset(-globalOffset.x, -globalOffset.y);
-
-        //Spin up the new Detail fragment.  Dig the custom animations.  Also put it on the back stack
-        //so we can hit the back button and come back to the list.
-        FragmentManager fragmentManager = getFragmentManager();
-        String title = TextUtils.isEmpty(name) ? "New Regex" : name;
-        RegexDetailFragment newFrag = RegexDetailFragment.newInstance(startBounds.top, finalBounds.top, startBounds.bottom, finalBounds.bottom, new AlarmStats(title, "Regex"), getTaskerMode(),
-                name, seconds, enabled, getType());
-        newFrag.attachClearListener(this);
-        fragmentManager.beginTransaction()
-                .setCustomAnimations(R.animator.expand_in, R.animator.noop, R.animator.noop, R.animator.expand_out)
-                .hide(this)
-                .add(R.id.container, newFrag, "regex_detail_" + getType())
-                .addToBackStack(null)
-                .commit();
-
     }
 
     @Override
