@@ -178,11 +178,11 @@ public class Wakelocks implements IXposedHookLoadPackage {
 
     private void hookServices(LoadPackageParam lpparam) {
 
-        boolean isServicBlockingEnabled = m_prefs.getBoolean("enable_service_block", true);
+        boolean isServiceBlockingEnabled = m_prefs.getBoolean("enable_service_block", true);
 
-        defaultLog("Service Blocking Status: " + isServicBlockingEnabled);
+        defaultLog("Service Blocking Status: " + isServiceBlockingEnabled);
 
-        if (isServicBlockingEnabled) {
+        if (isServiceBlockingEnabled) {
             boolean servicesHooked = false;
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 //Try for hooks for API levels 23
