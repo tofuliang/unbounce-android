@@ -84,7 +84,6 @@
     </style>
 
 
-
     <!-- general styles for the action bar -->
     <style name="UnbounceActionBar" parent="android:style/Widget.Holo.Light.ActionBar.Solid.Inverse">
         <item name="android:background">@color/background_primary</item>

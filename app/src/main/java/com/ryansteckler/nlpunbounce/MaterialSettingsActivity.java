@@ -4,23 +4,14 @@ import android.animation.ArgbEvaluator;
 import android.animation.ValueAnimator;
 import android.app.ActionBar;
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.FragmentManager;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
-import android.text.method.LinkMovementMethod;
 import android.util.Log;
-import android.view.View;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.ryansteckler.inappbilling.IabHelper;
-import com.ryansteckler.inappbilling.IabResult;
-import com.ryansteckler.inappbilling.Inventory;
-import com.ryansteckler.inappbilling.Purchase;
 import com.ryansteckler.nlpunbounce.helpers.LocaleHelper;
 import com.ryansteckler.nlpunbounce.helpers.ThemeHelper;
 
@@ -140,9 +131,13 @@ public class MaterialSettingsActivity extends Activity
 
     public void restoreActionBar() {
         ActionBar actionBar = getActionBar();
-        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
-        actionBar.setDisplayShowTitleEnabled(true);
-        actionBar.setTitle(mTitle);
+        try {
+            actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
+            actionBar.setDisplayShowTitleEnabled(true);
+            actionBar.setTitle(mTitle);
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+        }
     }
 
 
@@ -187,7 +182,11 @@ public class MaterialSettingsActivity extends Activity
             @Override
             public void onAnimationUpdate(final ValueAnimator animator) {
                 colorDrawable.setColor((Integer) animator.getAnimatedValue());
-                getActionBar().setBackgroundDrawable(colorDrawable);
+                try {
+                    getActionBar().setBackgroundDrawable(colorDrawable);
+                } catch (NullPointerException e) {
+                    e.printStackTrace();
+                }
             }
         });
         if (durationInMs >= 0)

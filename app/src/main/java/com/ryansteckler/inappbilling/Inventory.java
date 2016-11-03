@@ -52,7 +52,7 @@ public class Inventory {
         // Hzj_jie:
         final boolean JUMP_THROUGH = true;
         if (JUMP_THROUGH) {
-          return true;
+            return true;
         }
         return mPurchaseMap.containsKey(sku);
     }

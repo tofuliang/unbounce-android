@@ -39,7 +39,6 @@ import android.view.animation.LinearInterpolator;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.ryansteckler.nlpunbounce.helpers.DownloadHelper;
@@ -162,14 +161,18 @@ public class HomeFragment extends Fragment {
             }
 
             //Disable navigation away from the welcome banner. //TODO:  Fade the home bar?
-            getActivity().getActionBar().setHomeButtonEnabled(false);
+            try {
+                getActivity().getActionBar().setHomeButtonEnabled(false);
+            } catch (NullPointerException e) {
+                e.printStackTrace();
+            }
 
             //Setup animations on the banner
             view.post(new Runnable() {
                 @Override
                 public void run() {
                     int waitForAttach = 0;
-                    while (getActivity() == null && waitForAttach < 10) {
+                    while (getActivity() == null) {
                         try {
                             Thread.sleep(250);
                         } catch (InterruptedException e) {
@@ -247,7 +250,6 @@ public class HomeFragment extends Fragment {
                                 try {
                                     getActivity().sendBroadcast(intent);
                                 } catch (IllegalStateException ise) {
-
                                 }
                                 loadStatsFromSource(view);
                             }
@@ -340,7 +342,6 @@ public class HomeFragment extends Fragment {
         }
         return true;
     }
-
 
 
     private void loadStatsFromSource(final View view) {
@@ -544,11 +545,6 @@ public class HomeFragment extends Fragment {
     public String getAmplifyKernelVersion() {
         //The Unbounce hook changes this to true.
         return "0";
-    }
-
-    public boolean isXposedRunning() {
-//        return true;
-        return new File("/data/data/de.robv.android.xposed.installer/bin/XposedBridge.jar").exists();
     }
 
     /**
@@ -837,7 +833,11 @@ public class HomeFragment extends Fragment {
             nextButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    getActivity().getActionBar().setHomeButtonEnabled(true);
+                    try {
+                        getActivity().getActionBar().setHomeButtonEnabled(false);
+                    } catch (NullPointerException e) {
+                        e.printStackTrace();
+                    }
                     //When we're done, hide the parent view
                     mParentView.setVisibility(View.GONE);
                     mReverseWhenDone.reverse();

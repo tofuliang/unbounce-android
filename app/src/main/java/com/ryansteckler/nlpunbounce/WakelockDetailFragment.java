@@ -185,7 +185,10 @@ public class WakelockDetailFragment extends BaseDetailFragment {
         }
 
         //Enable or disable the seconds setting.
-        getView().findViewById(R.id.editWakelockSeconds).setEnabled(b);
+        try {
+            getView().findViewById(R.id.editWakelockSeconds).setEnabled(b);
+        } catch (NullPointerException e) {
+        }
         View panel = (View) getView().findViewById(R.id.settingsPanel);
         TypedValue backgroundValue = new TypedValue();
         Resources.Theme theme = getActivity().getTheme();
@@ -227,8 +230,12 @@ public class WakelockDetailFragment extends BaseDetailFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_wakelock_detail, container, false);
-        return view;
+        try {
+            View view = inflater.inflate(R.layout.fragment_wakelock_detail, container, false);
+            return view;
+        } catch (NullPointerException e) {
+            return null;
+        }
     }
 
     @Override

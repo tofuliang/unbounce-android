@@ -2,10 +2,11 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
 
-    <item android:id="@+id/action_new_custom"
-        android:title="@string/action_new_custom_item"
+    <item
+        android:id="@+id/action_new_custom"
         android:icon="@drawable/ic_action_new"
-        android:showAsAction="always" />
+        android:showAsAction="always"
+        android:title="@string/action_new_custom_item" />
 
 
 </menu>

@@ -1,51 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/listitemService"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="horizontal"
-    android:clickable="false"
     android:background="?attr/listBackgroundService"
-    android:paddingTop="@dimen/separator_pad"
+    android:baselineAligned="false"
+    android:clickable="false"
+    android:orientation="horizontal"
     android:paddingBottom="@dimen/separator_pad"
-    android:id="@+id/listitemService"
-    android:baselineAligned="false">
+    android:paddingTop="@dimen/separator_pad">
 
     <LinearLayout
-        android:orientation="vertical"
         android:layout_width="0px"
         android:layout_height="wrap_content"
-        android:layout_weight=".15">
+        android:layout_weight=".15"
+        android:orientation="vertical">
 
         <TextView
+            android:id="@+id/textViewServiceCount"
+            style="@style/TextBody1Light"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:text="@string/stat_loading"
-            android:id="@+id/textViewServiceCount"
-            android:singleLine="false"
-            android:visibility="visible"
             android:gravity="center_vertical|center_horizontal"
             android:paddingLeft="@dimen/section_pad"
             android:paddingRight="@dimen/section_pad"
-            style="@style/TextBody1Light"
-            android:textColor="@android:color/black" />
+            android:singleLine="false"
+            android:text="@string/stat_loading"
+            android:textColor="@android:color/black"
+            android:visibility="visible" />
     </LinearLayout>
 
     <LinearLayout
-        android:orientation="horizontal"
         android:layout_width="0px"
         android:layout_height="fill_parent"
-        android:layout_weight=".85">
+        android:layout_weight=".85"
+        android:orientation="horizontal">
 
         <TextView
             android:id="@+id/textviewServiceName"
+            style="?cardText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/stat_loading"
-            android:fontFamily="@string/app_font_family"
-            android:singleLine="true"
-            style="?cardText"
             android:layout_marginLeft="@dimen/section_pad"
             android:layout_marginStart="@dimen/section_pad"
-            android:ellipsize="marquee" />
+            android:ellipsize="marquee"
+            android:fontFamily="@string/app_font_family"
+            android:singleLine="true"
+            android:text="@string/stat_loading" />
     </LinearLayout>
 </LinearLayout>

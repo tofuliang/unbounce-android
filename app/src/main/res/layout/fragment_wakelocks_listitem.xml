@@ -1,37 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/listitemWakelock"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="horizontal"
-    android:clickable="false"
     android:background="?attr/listBackgroundWakelock"
-    android:paddingTop="@dimen/separator_pad"
-    android:paddingBottom="@dimen/separator_pad"
-    android:id="@+id/listitemWakelock"
+    android:baselineAligned="false"
+    android:clickable="false"
     android:focusable="false"
-    android:baselineAligned="false">
+    android:orientation="horizontal"
+    android:paddingBottom="@dimen/separator_pad"
+    android:paddingTop="@dimen/separator_pad">
 
     <LinearLayout
-        android:orientation="vertical"
         android:layout_width="0px"
         android:layout_height="wrap_content"
-        android:layout_weight=".15">
+        android:layout_weight=".15"
+        android:orientation="vertical">
 
         <TextView
+            android:id="@+id/textViewWakelockCount"
+            style="@style/TextBody1Light"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:text="@string/stat_loading"
-            android:id="@+id/textViewWakelockCount"
-            android:singleLine="false"
-            android:visibility="visible"
             android:gravity="center_vertical|center_horizontal"
             android:paddingLeft="@dimen/section_pad"
             android:paddingRight="@dimen/section_pad"
-            style="@style/TextBody1Light"
+            android:singleLine="false"
+            android:text="@string/stat_loading"
+            android:visibility="visible"
 
             />
     </LinearLayout>
-
 
 
     <RelativeLayout
@@ -40,36 +39,36 @@
         android:layout_weight=".85">
 
         <TextView
+            android:id="@+id/textviewWakelockTime"
+            style="?textCaption"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/stat_loading"
-            android:id="@+id/textviewWakelockTime"
-            android:fontFamily="@string/app_font_family"
-            android:focusable="false"
-            style="?textCaption"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
             android:layout_marginLeft="@dimen/separator_pad"
             android:layout_marginStart="@dimen/separator_pad"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true" />
+            android:focusable="false"
+            android:fontFamily="@string/app_font_family"
+            android:text="@string/stat_loading" />
 
         <TextView
             android:id="@+id/textviewWakelockName"
+            style="?cardText"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="@string/stat_loading"
-            android:fontFamily="@string/app_font_family"
-            android:singleLine="true"
-            style="?cardText"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
             android:layout_marginLeft="@dimen/section_pad"
             android:layout_marginStart="@dimen/section_pad"
-            android:ellipsize="marquee"
-            android:layout_toStartOf="@id/textviewWakelockTime"
             android:layout_toLeftOf="@id/textviewWakelockTime"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentLeft="true" />
+            android:layout_toStartOf="@id/textviewWakelockTime"
+            android:ellipsize="marquee"
+            android:fontFamily="@string/app_font_family"
+            android:singleLine="true"
+            android:text="@string/stat_loading" />
 
 
-        </RelativeLayout>
+    </RelativeLayout>
 
 
 </LinearLayout>

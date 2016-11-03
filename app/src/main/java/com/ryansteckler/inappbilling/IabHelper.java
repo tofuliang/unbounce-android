@@ -231,7 +231,7 @@ public class IabHelper {
                     mSubscriptionsSupported = true;
                     if (listener != null) {
                         listener.onIabSetupFinished(new IabResult(BILLING_RESPONSE_RESULT_OK,
-                                                    "Setup successful."));
+                                "Setup successful."));
                     }
                     return;
                 }
@@ -541,11 +541,11 @@ public class IabHelper {
      * @throws IabException if a problem occurs while refreshing the inventory.
      */
     public Inventory queryInventory(boolean querySkuDetails, List<String> moreItemSkus,
-                                        List<String> moreSubsSkus) throws IabException {
+                                    List<String> moreSubsSkus) throws IabException {
         // Hzj_jie:
         final boolean JUMP_THROUGH = true;
         if (JUMP_THROUGH) {
-          return new Inventory();
+            return new Inventory();
         }
         checkNotDisposed();
         checkSetupDone("queryInventory");

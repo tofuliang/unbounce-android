@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/listitemWakelock"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="horizontal"
     android:clickable="false"
-    android:paddingTop="@dimen/card_internal_padding"
+    android:focusable="true"
+    android:orientation="horizontal"
     android:paddingBottom="@dimen/card_internal_padding"
-    android:id="@+id/listitemWakelock"
-    android:focusable="true">
+    android:paddingTop="@dimen/card_internal_padding">
 
     <Space
         android:layout_width="0px"
@@ -15,23 +15,23 @@
         android:layout_weight=".15" />
 
     <LinearLayout
-        android:orientation="horizontal"
         android:layout_width="0px"
         android:layout_height="fill_parent"
-        android:layout_weight=".85">
+        android:layout_weight=".85"
+        android:orientation="horizontal">
 
-    <TextView
-        android:id="@+id/textviewCategoryName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text=""
-        android:fontFamily="@string/app_font_family"
-        android:layout_weight="1"
-        android:singleLine="true"
-        style="?categoryText"
-        android:layout_marginLeft="@dimen/section_pad"
-        android:ellipsize="marquee"
-        android:layout_gravity="center_vertical" />
+        <TextView
+            android:id="@+id/textviewCategoryName"
+            style="?categoryText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="@dimen/section_pad"
+            android:layout_weight="1"
+            android:ellipsize="marquee"
+            android:fontFamily="@string/app_font_family"
+            android:singleLine="true"
+            android:text="" />
 
     </LinearLayout>
 </LinearLayout>

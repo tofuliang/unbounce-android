@@ -17,7 +17,6 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 
 import com.ryansteckler.nlpunbounce.adapters.RegexAdapter;
-import com.ryansteckler.nlpunbounce.helpers.LogHelper;
 import com.ryansteckler.nlpunbounce.helpers.ThemeHelper;
 import com.ryansteckler.nlpunbounce.models.AlarmStats;
 

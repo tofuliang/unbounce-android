@@ -1,84 +1,85 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/white">
+    android:background="@android:color/white"
+    android:orientation="vertical">
 
 
     <LinearLayout
-        android:orientation="vertical"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
+        android:orientation="vertical"
         android:padding="@dimen/card_internal_padding">
 
         <TextView
+            style="@style/TextTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/tasker_which_task"
-            style="@style/TextTitle"
-            android:layout_marginBottom="@dimen/card_internal_padding" />
+            android:layout_marginBottom="@dimen/card_internal_padding"
+            android:text="@string/tasker_which_task" />
 
         <LinearLayout
-            android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/card_internal_padding">
+            android:layout_marginTop="@dimen/card_internal_padding"
+            android:orientation="horizontal">
 
             <Button
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/tasker_task_wakelock"
                 android:id="@+id/buttonTaskerWakelock"
-                android:background="@color/background_secondary"
-                style="@style/TextTitleLight"
-                android:layout_weight=".3" />
-
-            <Button
                 style="@style/TextTitleLight"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/tasker_task_wakelock_regex"
-                android:id="@+id/buttonTaskerWakelockRegex"
+                android:layout_weight=".3"
                 android:background="@color/background_secondary"
+                android:text="@string/tasker_task_wakelock" />
+
+            <Button
+                android:id="@+id/buttonTaskerWakelockRegex"
+                style="@style/TextTitleLight"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/card_external_padding"
                 android:layout_weight=".7"
-                android:layout_marginLeft="@dimen/card_external_padding" />
+                android:background="@color/background_secondary"
+                android:text="@string/tasker_task_wakelock_regex" />
         </LinearLayout>
 
         <LinearLayout
-            android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/card_external_padding">
+            android:layout_marginTop="@dimen/card_external_padding"
+            android:orientation="horizontal">
 
             <Button
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/tasker_task_alarm"
                 android:id="@+id/buttonTaskerAlarm"
-                android:background="@color/background_four"
-                style="@style/TextTitleLight"
-                android:layout_weight=".3" />
-
-            <Button
                 style="@style/TextTitleLight"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/tasker_task_alarm_regex"
-                android:id="@+id/buttonTaskerAlarmRegex"
+                android:layout_weight=".3"
                 android:background="@color/background_four"
+                android:text="@string/tasker_task_alarm" />
+
+            <Button
+                android:id="@+id/buttonTaskerAlarmRegex"
+                style="@style/TextTitleLight"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/card_external_padding"
-                android:layout_weight=".7" />
+                android:layout_weight=".7"
+                android:background="@color/background_four"
+                android:text="@string/tasker_task_alarm_regex" />
         </LinearLayout>
 
         <Button
+            android:id="@+id/buttonTaskerReset"
+            style="@style/TextTitleLight"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/tasker_task_reset"
-            android:id="@+id/buttonTaskerReset"
             android:layout_marginTop="@dimen/card_external_padding"
-            style="@style/TextTitleLight"
-            android:background="@color/background_three" />
+            android:background="@color/background_three"
+            android:text="@string/tasker_task_reset" />
 
     </LinearLayout>
 </LinearLayout>

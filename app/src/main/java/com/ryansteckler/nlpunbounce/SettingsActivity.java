@@ -20,7 +20,7 @@ import com.ryansteckler.nlpunbounce.helpers.ThemeHelper;
 
 public class SettingsActivity extends Activity {
 
-    private static final String TAG = "Anmplify: ";
+    private static final String TAG = "Amplify: ";
     static int mClicksOnDebug = 0;
     static Preference mExtendedDebugCategory = null;
     int mCurTheme = ThemeHelper.THEME_DEFAULT;

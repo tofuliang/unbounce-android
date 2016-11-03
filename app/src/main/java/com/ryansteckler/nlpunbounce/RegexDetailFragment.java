@@ -108,7 +108,11 @@ public class RegexDetailFragment extends BaseDetailFragment {
         }
 
         //Enable or disable the seconds setting.
-        getView().findViewById(R.id.editRegexSeconds).setEnabled(b);
+        try {
+            getView().findViewById(R.id.editRegexSeconds).setEnabled(b);
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+        }
         View panel = (View) getView().findViewById(R.id.settingsPanelSeconds);
         TypedValue backgroundValue = new TypedValue();
         Resources.Theme theme = getActivity().getTheme();
@@ -159,26 +163,38 @@ public class RegexDetailFragment extends BaseDetailFragment {
     private String getDescriptionText(String regex) {
         ArrayList<BaseStats> events;
         if (mDefaultSetName.equals("wakelock")) {
-            events = UnbounceStatsCollection.getInstance().toWakelockArrayList(getView().getContext());
+            try {
+                events = UnbounceStatsCollection.getInstance().toWakelockArrayList(getView().getContext());
+            } catch (NullPointerException e) {
+                e.printStackTrace();
+                events = null;
+            }
         } else if (mDefaultSetName.equals("alarm")) {
-            events = UnbounceStatsCollection.getInstance().toAlarmArrayList(getView().getContext());
+            try {
+                events = UnbounceStatsCollection.getInstance().toAlarmArrayList(getView().getContext());
+            } catch (NullPointerException e) {
+                e.printStackTrace();
+                events = null;
+            }
         } else {
             return "Description unavailable";
         }
 
         Set<String> matchingEvents = new HashSet<>();
-
-        for (BaseStats event : events) {
-            String eventName = event.getName();
-            if (eventName.matches(regex))
-                matchingEvents.add(eventName);
+        if (events != null) {
+            for (BaseStats event : events) {
+                String eventName = event.getName();
+                if (eventName.matches(regex))
+                    matchingEvents.add(eventName);
+            }
+            String descriptionText = getResources().getString(R.string.desc_regex_unknown);
+            if (matchingEvents.size() > 0)
+                descriptionText = String.format(getResources().getString(R.string.desc_regex), matchingEvents.size(), events.size())
+                        + "\n\n" + TextUtils.join("\n", matchingEvents);
+            return descriptionText;
+        } else {
+            return null;
         }
-
-        String descriptionText = getResources().getString(R.string.desc_regex_unknown);
-        if (matchingEvents.size() > 0)
-            descriptionText = String.format(getResources().getString(R.string.desc_regex), matchingEvents.size(), events.size())
-                    + "\n\n" + TextUtils.join("\n", matchingEvents);
-        return descriptionText;
     }
 
     @Override
@@ -235,8 +251,11 @@ public class RegexDetailFragment extends BaseDetailFragment {
         final Switch onOff = (Switch) view.findViewById(R.id.switchStat);
         boolean enabled = mEnabled.equals("enabled");
         onOff.setChecked(enabled);
-
-        getView().findViewById(R.id.editRegexSeconds).setEnabled(onOff.isChecked());
+        try {
+            getView().findViewById(R.id.editRegexSeconds).setEnabled(onOff.isChecked());
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+        }
 
         View panel = (View) getView().findViewById(R.id.settingsPanelSeconds);
         TypedValue backgroundValue = new TypedValue();
@@ -273,8 +292,11 @@ public class RegexDetailFragment extends BaseDetailFragment {
                 if (regexValid) {
                     regexChanged = true;
                     mDefaultValue = textView.getText().toString();
-                    TextView description = (TextView) getView().findViewById(R.id.textViewDescription);
-                    description.setText(getDescriptionText(mDefaultValue));
+                    try {
+                        TextView description = (TextView) getView().findViewById(R.id.textViewDescription);
+                        description.setText(getDescriptionText(mDefaultValue));
+                    } catch (NullPointerException e) {
+                    }
                 } else {
                     textView.setError("Invalid regex");
                 }
@@ -337,7 +359,6 @@ public class RegexDetailFragment extends BaseDetailFragment {
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         menu.clear();
-        //getActivity().getMenuInflater().inflate(R.menu.alarm_detail, menu);
     }
 
     @Override

@@ -1,6 +1,5 @@
 <!-- A DrawerLayout is intended to be used as the top-level content view using match_parent for both width and height to consume the full space available. -->
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -9,46 +8,45 @@
 
     <!-- As the main content view, the view below consumes the entire
          space available using match_parent in both dimensions. -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/header_height"
+        android:background="?taskerHeader"
+        android:orientation="horizontal"
+        android:padding="@dimen/card_internal_padding"
+        android:showDividers="end">
+
+        <TextView
+            android:id="@+id/textTaskerHeader"
+            style="?taskerHeaderText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight=".9"
+            android:gravity="start"
+            android:text="@string/tasker_welcome" />
+
         <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/header_height"
-            android:padding="@dimen/card_internal_padding"
-            android:showDividers="end"
-            android:background="?taskerHeader">
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:gravity="end"
+            android:orientation="horizontal">
 
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:text="@string/tasker_welcome"
-                android:id="@+id/textTaskerHeader"
-                style="?taskerHeaderText"
-                android:gravity="start"
-                android:layout_weight=".9" />
-
-            <LinearLayout
-                android:orientation="horizontal"
+            <Button
+                android:id="@+id/buttonTaskerSave"
+                style="@style/TextTitleLight"
                 android:layout_width="wrap_content"
-                android:layout_height="fill_parent"
-                android:gravity="end">
-
-                <Button
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/dialog_save"
-                    android:id="@+id/buttonTaskerSave"
-                    android:background="@color/background_primary_shaded"
-                    style="@style/TextTitleLight"
-                    android:visibility="gone" />
-            </LinearLayout>
-
+                android:layout_height="wrap_content"
+                android:background="@color/background_primary_shaded"
+                android:text="@string/dialog_save"
+                android:visibility="gone" />
         </LinearLayout>
+
+    </LinearLayout>
 
     <FrameLayout
         android:id="@+id/container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" >
-    </FrameLayout>
+        android:layout_height="match_parent"></FrameLayout>
 
 
 </LinearLayout>

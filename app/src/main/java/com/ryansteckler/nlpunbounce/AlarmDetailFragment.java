@@ -113,7 +113,11 @@ public class AlarmDetailFragment extends BaseDetailFragment {
             }
         });
 
-        getView().findViewById(R.id.editAlarmSeconds).setEnabled(onOff.isChecked());
+        try {
+            getView().findViewById(R.id.editAlarmSeconds).setEnabled(onOff.isChecked());
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+        }
 
         View panel = (View) getView().findViewById(R.id.settingsPanel);
         TypedValue backgroundValue = new TypedValue();
@@ -184,7 +188,12 @@ public class AlarmDetailFragment extends BaseDetailFragment {
         }
 
         //Enable or disable the seconds setting.
-        getView().findViewById(R.id.editAlarmSeconds).setEnabled(b);
+        try {
+            getView().findViewById(R.id.editAlarmSeconds).setEnabled(b);
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+        }
+
         View panel = (View) getView().findViewById(R.id.settingsPanel);
         TypedValue backgroundValue = new TypedValue();
         Resources.Theme theme = getActivity().getTheme();
