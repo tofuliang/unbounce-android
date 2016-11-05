@@ -377,35 +377,7 @@ public class HomeFragment extends Fragment {
         //Kick off a refresh
 
         SharedPreferences prefs = getActivity().getSharedPreferences("com.ryansteckler.nlpunbounce" + "_preferences", Context.MODE_WORLD_READABLE);
-        if (prefs.getBoolean("global_participation", true)) {
-            stats.getStatsFromNetwork(c, new Handler() {
-                @Override
-                public void handleMessage(Message msg) {
-                    //Global wakelocks
-                    TextView textView = (TextView) view.findViewById(R.id.textGlobalWakelockDurationAllowed);
-                    textView.setText(stats.getWakelockDurationAllowedFormatted(c, UnbounceStatsCollection.STAT_GLOBAL));
-                    textView = (TextView) view.findViewById(R.id.textGlobalWakelockAllowed);
-                    textView.setText(String.valueOf(stats.getTotalAllowedWakelockCount(c, UnbounceStatsCollection.STAT_GLOBAL)));
-                    textView = (TextView) view.findViewById(R.id.textGlobalWakelockBlocked);
-                    textView.setText(String.valueOf(stats.getTotalBlockWakelockCount(c, UnbounceStatsCollection.STAT_GLOBAL)));
-                    textView = (TextView) view.findViewById(R.id.textGlobalWakelockDurationBlocked);
-                    textView.setText(stats.getWakelockDurationBlockedFormatted(c, UnbounceStatsCollection.STAT_GLOBAL));
-
-                    //Global services
-                    textView = (TextView) view.findViewById(R.id.textGlobalServiceAllowed);
-                    textView.setText(String.valueOf(stats.getTotalAllowedServiceCount(c, UnbounceStatsCollection.STAT_GLOBAL)));
-                    textView = (TextView) view.findViewById(R.id.textGlobalServiceBlocked);
-                    textView.setText(String.valueOf(stats.getTotalBlockServiceCount(c, UnbounceStatsCollection.STAT_GLOBAL)));
-
-                    //Global Alarms
-                    textView = (TextView) view.findViewById(R.id.textGlobalAlarmAllowed);
-                    textView.setText(String.valueOf(stats.getTotalAllowedAlarmCount(c, UnbounceStatsCollection.STAT_GLOBAL)));
-                    textView = (TextView) view.findViewById(R.id.textGlobalAlarmBlocked);
-                    textView.setText(String.valueOf(stats.getTotalBlockAlarmCount(c, UnbounceStatsCollection.STAT_GLOBAL)));
-
-                }
-            });
-        } else {
+        {
             //Global wakelocks
             textView = (TextView) view.findViewById(R.id.textGlobalWakelockDurationAllowed);
             textView.setText(getResources().getString(R.string.stat_disabled));
