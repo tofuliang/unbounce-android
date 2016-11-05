@@ -21,9 +21,6 @@ public class AlarmStats extends BaseStats implements Serializable {
 
     }
 
-    private AlarmStats() {
-    }
-
     @Override
     public String getDerivedPackageName(Context ctx) {
         if (null == getDerivedPackageName()) {

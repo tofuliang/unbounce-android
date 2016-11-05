@@ -85,7 +85,7 @@ class ExecShell {
         return fullResponse;
     }
 
-    public static enum SHELL_CMD {
+    public enum SHELL_CMD {
         check_su_binary(new String[]{"/system/xbin/which", "su"});
         String[] command;
 

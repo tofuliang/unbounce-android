@@ -2,13 +2,11 @@ package com.ryansteckler.nlpunbounce.models;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Environment;
 import android.os.SystemClock;
 import android.util.Log;
 
-import com.ryansteckler.nlpunbounce.ActivityReceiver;
 import com.ryansteckler.nlpunbounce.hooks.Wakelocks;
 
 import java.io.File;
