@@ -628,7 +628,6 @@ public class UnbounceStatsCollection implements Serializable {
         if (timeSinceLastPush > mPushTimeFrequency) {
             //Push now
             mLastPush = now;
-            pushStatsToNetwork(context);
         }
         return true;
     }
@@ -707,15 +706,6 @@ public class UnbounceStatsCollection implements Serializable {
         //Save it to the local system
     }
 
-    public void pushStatsToNetwork(final Context context) {
-        //Send a broadcast to the activity asking for this.
-        Intent intent = new Intent(ActivityReceiver.PUSH_NETWORK_STATS);
-        try {
-            context.sendBroadcast(intent);
-        } catch (IllegalStateException ise) {
-        }
-
-    }
 
     /*
     public void pushStatsToNetworkInternal(final Context context) {

@@ -283,16 +283,6 @@ public class HomeFragment extends Fragment {
         }
     }
 
-    private boolean isInstalledFromPlay() {
-        String installer = getActivity().getPackageManager().getInstallerPackageName("com.ryansteckler.nlpunbounce");
-
-        if (installer == null) {
-            return false;
-        } else {
-            return installer.equals("com.android.vending");
-        }
-    }
-
     private boolean launchXposedModules() {
         Intent LaunchIntent = null;
 
