@@ -11,6 +11,9 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.ryansteckler.nlpunbounce.R;
+import com.ryansteckler.nlpunbounce.RegexDetailFragment;
+import com.ryansteckler.nlpunbounce.models.BaseStats;
+import com.ryansteckler.nlpunbounce.models.UnbounceStatsCollection;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -75,7 +78,7 @@ public class RegexAdapter extends ArrayAdapter<String> {
             button.setEnabled(!mTaskerMode);
         }
 
-        /*
+/*
         TextView regexMatchText = (TextView) view.findViewById(R.id.regexMatchText);
         int matchingAlarmsCount = 0;
         ArrayList<BaseStats> alarms = UnbounceStatsCollection.getInstance().toAlarmArrayList(null);
@@ -90,7 +93,7 @@ public class RegexAdapter extends ArrayAdapter<String> {
             regexMatchText.setText(String.format(context.getResources().getString(R.string.regex_list_enabled),
                     RegexDetailFragment.matchingEvents.size(), events.size()));
         }
-        */
+*/
 
         return view;
     }

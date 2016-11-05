@@ -23,8 +23,6 @@ public class ActivityReceiver extends BroadcastReceiver {
             UnbounceStatsCollection.getInstance().createFiles(context);
         } else if (action.equals(RESET_FILES_ACTION)) {
             UnbounceStatsCollection.getInstance().recreateFiles(context);
-        } else if (action.equals(PUSH_NETWORK_STATS)) {
-            UnbounceStatsCollection.getInstance().pushStatsToNetworkInternal(context);
         }
 
     }

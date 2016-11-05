@@ -720,6 +720,7 @@ public class UnbounceStatsCollection implements Serializable {
 
     }
 
+    /*
     public void pushStatsToNetworkInternal(final Context context) {
         //Are we allowed to?
         SharedPreferences prefs = context.getSharedPreferences("com.ryansteckler.nlpunbounce" + "_preferences", Context.MODE_WORLD_READABLE);
@@ -764,6 +765,7 @@ public class UnbounceStatsCollection implements Serializable {
         }
     }
 
+*/
     public void getStatsFromNetwork(final Context context, final Handler clientHandler) {
         //Push the JSON to the server
         //Are we allowed to?
