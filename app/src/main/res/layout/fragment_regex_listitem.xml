@@ -56,7 +56,7 @@
                 android:ellipsize="marquee"
                 android:fontFamily="@string/app_font_family"
                 android:singleLine="true"
-                android:text="@string/regex_list_disabled"
+                android:text=""
                 android:textStyle="italic" />
         </LinearLayout>
 

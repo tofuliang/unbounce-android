@@ -160,7 +160,7 @@ public class RegexDetailFragment extends BaseDetailFragment {
         }
     }
 
-    private String getDescriptionText(String regex) {
+    public String getDescriptionText(String regex) {
         ArrayList<BaseStats> events;
         if (mDefaultSetName.equals("wakelock")) {
             try {
