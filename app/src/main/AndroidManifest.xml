@@ -3,9 +3,6 @@
     package="com.ryansteckler.nlpunbounce"
     android:installLocation="internalOnly">
 
-    <uses-permission android:name="com.android.vending.BILLING" />
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <application
@@ -25,7 +22,8 @@
 
         <activity
             android:name=".SettingsActivity"
-            android:label="Amplify settings"></activity>
+            android:label="Amplify settings">
+        </activity>
 
         <receiver
             android:name=".ActivityReceiver"
@@ -35,8 +33,6 @@
                 <action android:name="com.ryansteckler.nlpunbounce.STATS_REFRESHED_ACTION" />
                 <action android:name="com.ryansteckler.nlpunbounce.CREATE_FILES_ACTION" />
                 <action android:name="com.ryansteckler.nlpunbounce.RESET_FILES_ACTION" />
-                <action android:name="com.ryansteckler.nlpunbounce.PUSH_NETWORK_STATS" />
-
             </intent-filter>
         </receiver>
 
@@ -45,7 +41,6 @@
             android:label="@string/title_activity_material_settings">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="de.robv.android.xposed.category.MODULE_SETTINGS" />
             </intent-filter>
         </activity>
