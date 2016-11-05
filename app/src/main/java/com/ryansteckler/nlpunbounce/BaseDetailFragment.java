@@ -51,8 +51,6 @@ public abstract class BaseDetailFragment extends Fragment {
 
     protected abstract void loadStatsFromSource(View view);
 
-    protected abstract void warnUnknown(Switch onOff);
-
     protected abstract void updateEnabled(boolean b);
 
     protected abstract BaseDetailFragment newInstance();
@@ -102,12 +100,8 @@ public abstract class BaseDetailFragment extends Fragment {
 
                     if (isPremium || mFree) {
                         final boolean b = !onOff.isChecked();
-                        if (b && !mKnownSafe) {
-                            warnUnknown(onOff);
-                        } else {
                             updateEnabled(b);
                             return false;
-                        }
                     } else {
                         //Deny based on licensing.
                         warnLicensing(onOff);

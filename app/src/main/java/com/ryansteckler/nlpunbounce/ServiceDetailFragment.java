@@ -72,28 +72,6 @@ public class ServiceDetailFragment extends BaseDetailFragment {
     }
 
     @Override
-    protected void warnUnknown(final Switch onOff) {
-        new AlertDialog.Builder(getActivity())
-                .setTitle(R.string.alert_unknown_service_title)
-                .setMessage(R.string.alert_unknown_service_content)
-                .setPositiveButton(R.string.dialog_unbounce, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        onOff.setChecked(true);
-                        updateEnabled(true);
-                    }
-                })
-                .setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        //don't set the switch
-                        onOff.setChecked(false);
-                        updateEnabled(false);
-                    }
-                })
-                .setIcon(android.R.drawable.ic_dialog_alert)
-                .show();
-    }
-
-    @Override
     protected void updateEnabled(boolean b) {
         String blockName = "service_" + mStat.getName() + "_enabled";
         if (!mTaskerMode) {

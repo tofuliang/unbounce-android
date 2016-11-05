@@ -81,11 +81,6 @@ public class RegexDetailFragment extends BaseDetailFragment {
         }
     }
 
-    @Override
-    protected void warnUnknown(final Switch onOff) {
-        onOff.toggle();
-        updateEnabled(onOff.isChecked());
-    }
 
     @Override
     protected void updateEnabled(boolean b) {
