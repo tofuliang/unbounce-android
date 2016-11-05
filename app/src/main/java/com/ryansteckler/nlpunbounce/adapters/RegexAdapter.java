@@ -11,9 +11,6 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.ryansteckler.nlpunbounce.R;
-import com.ryansteckler.nlpunbounce.RegexDetailFragment;
-import com.ryansteckler.nlpunbounce.models.BaseStats;
-import com.ryansteckler.nlpunbounce.models.UnbounceStatsCollection;
 
 import java.util.ArrayList;
 import java.util.HashSet;

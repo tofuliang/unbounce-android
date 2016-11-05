@@ -5,13 +5,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Environment;
-import android.os.Handler;
-import android.os.Message;
 import android.os.SystemClock;
 import android.util.Log;
 
 import com.ryansteckler.nlpunbounce.ActivityReceiver;
-import com.ryansteckler.nlpunbounce.helpers.NetworkHelper;
 import com.ryansteckler.nlpunbounce.hooks.Wakelocks;
 
 import java.io.File;
@@ -766,6 +763,7 @@ public class UnbounceStatsCollection implements Serializable {
     }
 
 */
+    /*
     public void getStatsFromNetwork(final Context context, final Handler clientHandler) {
         //Push the JSON to the server
         //Are we allowed to?
@@ -789,7 +787,7 @@ public class UnbounceStatsCollection implements Serializable {
             });
         }
     }
-
+*/
     public void refreshPrefs(XSharedPreferences prefs) {
         //Refresh the global options from the settings
         mGlobalParticipation = prefs.getBoolean("global_participation", true);
